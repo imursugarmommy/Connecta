@@ -3,11 +3,11 @@ import { StyleSheet } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 
-export default function ProfileScreen() {
+export default function SearchScreen() {
   return (
     <View style={styles.container}>
       <View style={{height: 10}} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text style={styles.headline}>Profil</Text>
+      <Text style={styles.headline}>Suche</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgb(255, 255, 255)" />
     </View>
   );

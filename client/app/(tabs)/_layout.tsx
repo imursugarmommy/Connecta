@@ -1,20 +1,13 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Octicons from '@expo/vector-icons/Octicons';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,28 +24,21 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: () => <FontAwesome6 name="house" size={24} color="black" />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          tabBarIcon: () => <FontAwesome6 name="house" size={24} color="white" />,
+        }}
+      />
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Suche',
+          tabBarIcon: () => <Octicons name="search" size={24} color="white" />,
         }}
       />
       <Tabs.Screen
         name="two"
         options={{
           title: 'Profile',
-          tabBarIcon: () => <FontAwesome name="user" size={24} color="black" />,
+          tabBarIcon: () => <FontAwesome name="user" size={24} color="white" />,
         }}
       />
     </Tabs>

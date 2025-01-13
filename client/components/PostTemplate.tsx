@@ -12,9 +12,7 @@ interface Post {
 
 const Post = ({ post }: { post: Post }) => {
   return (
-    <View
-      className="w-full bg-red-200 mb-6 rounded-md overflow-hidden"
-      key={post.id}>
+    <View className="w-full bg-red-200 mb-6 rounded-md overflow-hidden">
       <View className="w-full bg-gray-500 p-3">
         <Text className="text-2xl text-white">{post.title}</Text>
       </View>

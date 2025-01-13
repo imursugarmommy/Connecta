@@ -1,9 +1,10 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { useState } from "react";
 
 import PostTemplate from "../../components/PostTemplate";
+import { router } from "expo-router";
 
 export default function HomeScreen() {
   const [posts, setPosts] = useState([
@@ -66,7 +67,11 @@ export default function HomeScreen() {
       />
       <ScrollView className="w-full h-full p-4">
         {posts.map((post) => (
-          <PostTemplate post={post} />
+          <TouchableOpacity
+            onPress={() => router.push(`/post/${post.id}`)}
+            key={post.id}>
+            <PostTemplate post={post} />
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </View>

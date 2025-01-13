@@ -5,38 +5,18 @@ import { Text, View } from "@/components/Themed";
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
+    <View className="flex-1 items-center">
       <View
-        style={{ height: 10 }}
+        className="h-3"
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <Text style={styles.headline}>Neue Posts für dich</Text>
+      <Text className="text-2xl font-bold">Neue Posts für dich</Text>
       <View
-        style={styles.separator}
+        className="my-8 h-px w-4/5"
         lightColor="#eee"
         darkColor="rgb(255, 255, 255)"
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  headline: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-});

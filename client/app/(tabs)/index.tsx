@@ -68,7 +68,7 @@ export default function HomeScreen() {
       <ScrollView className="w-full h-full p-4">
         {posts.map((post) => (
           <TouchableOpacity
-            onPress={() => router.push(`/post/${post.id}`)}
+            onPress={() => router.push(`/post/${post.id}` as any)}
             key={post.id}>
             <PostTemplate post={post} />
           </TouchableOpacity>

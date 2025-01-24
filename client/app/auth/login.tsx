@@ -69,9 +69,9 @@ const login = () => {
 
     setTimeout(() => {
       axios.get("http://192.168.178.170:6969/users/" + username).then((res) => {
-        if (res.data) return setErrorMessage("Username already exists");
+        if (res.data) return setErrorMessage("");
 
-        setErrorMessage("");
+        setErrorMessage("Username does not exist");
       });
     }, 500);
   };
@@ -86,7 +86,7 @@ const login = () => {
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={onSubmit}
-        value={"Register"}
+        value={"Sign in"}
         errorMessage={errorMessage}
         checkForUsername={checkForUsername}
       />

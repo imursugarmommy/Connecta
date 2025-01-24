@@ -64,12 +64,13 @@ export default function AuthForm({
                         key === "username" ? checkForUsername : null
                       }
                     />
-                    {errorMessage === "Username already exists" &&
-                      key === "username" && (
-                        <Text className="text-red-500 text-lg absolute right-0">
-                          X
-                        </Text>
-                      )}
+                    {errorMessage === "Username already exists" ||
+                      (errorMessage === "Username does not exist" &&
+                        key === "username" && (
+                          <Text className="text-red-500 text-lg absolute right-0">
+                            X
+                          </Text>
+                        ))}
                   </View>
                 </View>
               );
@@ -86,17 +87,17 @@ export default function AuthForm({
                 onPress={() => handleSubmit()}
                 className="bg-[#FFD343] py-2 rounded-md w-full items-center"
                 disabled={
-                  errors.username ||
-                  errors.password ||
-                  errorMessage === "Username already exists"
+                  objectKeysArr.some((key) => errors[key] && touched[key]) ||
+                  errorMessage === "Username already exists" ||
+                  errorMessage === "Username does not exist"
                     ? true
                     : false
                 }
                 style={{
                   backgroundColor:
-                    errors.username ||
-                    errors.password ||
-                    errorMessage === "Username already exists"
+                    objectKeysArr.some((key) => errors[key] && touched[key]) ||
+                    errorMessage === "Username already exists" ||
+                    errorMessage === "Username does not exist"
                       ? "rgba(255, 211, 67, 0.2)"
                       : "#FFD343",
                 }}>

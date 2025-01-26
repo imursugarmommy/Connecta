@@ -35,16 +35,15 @@ const login = () => {
   const onSubmit = async (data: any) => {
     setErrorMessage("");
     try {
-      const loginResponse = await axios.post(
-        serverip + "/users/login",
-        data
-      );
+      const loginResponse = await axios.post(serverip + "/users/login", data);
+
+      console.log("login response: ", loginResponse.data);
 
       if (loginResponse.data.error)
         return setErrorMessage(loginResponse.data.error);
 
       const userResponse = await axios.get(
-        serverip + `/users/${data.username}`
+        serverip + `/users/byUsername/${data.username}`
       );
 
       if (userResponse.data.error)

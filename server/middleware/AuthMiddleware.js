@@ -2,17 +2,20 @@ const { verify } = require("jsonwebtoken");
 require("dotenv").config();
 
 const validateToken = (req, res, next) => {
-  const acccessToken = req.header("accessToken");
+  const accessToken = req.header("accessToken");
+  console.log("access token: ", accessToken);
 
-  if (!acccessToken) return res.json({ error: "User not logged in" });
+  if (!accessToken) return res.json({ error: "User not logged in" });
 
   try {
-    const validToken = verify(acccessToken, process.env.ACCESSTOKEN);
+    const validToken = verify(accessToken, "VY0udrD19G9WKCLM1BmnZsALmfPn");
+    console.log(validToken);
 
     req.user = validToken;
 
     if (validToken) return next();
   } catch (err) {
+    console.log("Validation Error: ", err);
     return res.json({ error: err });
   }
 };

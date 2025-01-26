@@ -6,6 +6,8 @@ require("dotenv").config();
 
 const { sign } = require("jsonwebtoken");
 
+const { validateToken } = require("../middleware/AuthMiddleware");
+
 // get all users
 router.get("/", async (req, res) => {
   const users = await Users.findAll();
@@ -44,15 +46,15 @@ router.post("/login", async (req, res) => {
     if (!match) return res.json({ error: "Wrong username or password" });
 
     const accessToken = sign(
-      { id: user.id, name: user.name, username: user.username },
-      process.env.ACCESSTOKEN
+      { id: user.id, email: user.email, username: user.username },
+      "VY0udrD19G9WKCLM1BmnZsALmfPn"
     );
 
     res.json(accessToken);
   });
 });
 
-router.get("/:username", async (req, res) => {
+router.get("/byUsername/:username", async (req, res) => {
   const { username } = req.params;
 
   const user = await Users.findOne({
@@ -62,6 +64,10 @@ router.get("/:username", async (req, res) => {
   });
 
   res.json(user);
+});
+
+router.get("/auth", validateToken, async (req, res) => {
+  res.json(req.user);
 });
 
 module.exports = router;

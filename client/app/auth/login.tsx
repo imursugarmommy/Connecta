@@ -11,6 +11,12 @@ import { useAuth } from "../helpers/AuthContext";
 import { router } from "expo-router";
 import AuthForm from "../../components/AuthForm";
 
+const buildServerIp = (ip: string, port: number) => {
+  return `http://${ip}:${port}`;
+};
+
+const serverip = buildServerIp(String(process.env.EXPO_PUBLIC_SERVERIP), 6969);
+
 const login = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -28,10 +34,9 @@ const login = () => {
 
   const onSubmit = async (data: any) => {
     setErrorMessage("");
-
     try {
       const loginResponse = await axios.post(
-        "http://192.168.178.170:6969/users/login",
+        serverip + "/users/login",
         data
       );
 
@@ -39,7 +44,7 @@ const login = () => {
         return setErrorMessage(loginResponse.data.error);
 
       const userResponse = await axios.get(
-        `http://192.168.178.170:6969/users/${data.username}`
+        serverip + `/users/${data.username}`
       );
 
       if (userResponse.data.error)
@@ -68,7 +73,7 @@ const login = () => {
     setErrorMessage("Loading...");
 
     setTimeout(() => {
-      axios.get("http://192.168.178.170:6969/users/" + username).then((res) => {
+      axios.get(serverip + "/users/" + username).then((res) => {
         if (res.data) return setErrorMessage("");
 
         setErrorMessage("Username does not exist");

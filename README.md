@@ -20,7 +20,7 @@ DB_PASSWORD = ""
 DB_DATABASE = ""
 DB_HOST = ""
 
-ACCESSTOKEN = ""
+JWT_SECRET = ""
 ```
 
 start server and client

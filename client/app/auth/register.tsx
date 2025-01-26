@@ -33,6 +33,8 @@ const login = () => {
   const onSubmit = (data: any) => {
     setErrorMessage("");
 
+    checkForUsername(data.username);
+
     axios.post(serverip + "/users", data).then((res) => {
       if (res.data.error) setErrorMessage(res.data.error);
       else router.push("/auth/login");
@@ -41,12 +43,14 @@ const login = () => {
 
   const checkForUsername = (username: string) => {
     setErrorMessage("Loading...");
+    console.log();
 
     setTimeout(() => {
       axios.get(serverip + "/users/" + username).then((res) => {
-        if (res.data) return setErrorMessage("Username already exists");
+        console.log(res.data);
+        if (res.data.error) return setErrorMessage("");
 
-        setErrorMessage("");
+        setErrorMessage("Username already exists");
       });
     }, 500);
   };

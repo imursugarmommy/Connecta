@@ -37,13 +37,11 @@ const login = () => {
     try {
       const loginResponse = await axios.post(serverip + "/users/login", data);
 
-      console.log("login response: ", loginResponse.data);
-
       if (loginResponse.data.error)
         return setErrorMessage(loginResponse.data.error);
 
       const userResponse = await axios.get(
-        serverip + `/users/byUsername/${data.username}`
+        serverip + `/users/` + data.username
       );
 
       if (userResponse.data.error)
@@ -72,10 +70,10 @@ const login = () => {
     setErrorMessage("Loading...");
 
     setTimeout(() => {
-      axios.get(serverip + "/users/" + username).then((res) => {
-        if (res.data) return setErrorMessage("");
+      axios.get(serverip + `/users/` + username).then((res) => {
+        if (res.data.error) return setErrorMessage(res.data.error);
 
-        setErrorMessage("Username does not exist");
+        setErrorMessage("");
       });
     }, 500);
   };

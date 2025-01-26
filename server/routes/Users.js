@@ -54,7 +54,11 @@ router.post("/login", async (req, res) => {
   });
 });
 
-router.get("/byUsername/:username", async (req, res) => {
+router.get("/auth", validateToken, async (req, res) => {
+  res.json(req.user);
+});
+
+router.get("/:username", async (req, res) => {
   const { username } = req.params;
 
   const user = await Users.findOne({
@@ -63,11 +67,9 @@ router.get("/byUsername/:username", async (req, res) => {
     },
   });
 
-  res.json(user);
-});
+  if (!user) return res.json({ error: "User does not exist" });
 
-router.get("/auth", validateToken, async (req, res) => {
-  res.json(req.user);
+  res.json(user);
 });
 
 module.exports = router;

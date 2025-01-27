@@ -28,8 +28,6 @@ export default function CheckAuth({ children }: { children: React.ReactNode }) {
             }
           );
 
-          console.log("user data: ", res.data);
-
           if (res.data.error) {
             setAuthState({
               id: "",

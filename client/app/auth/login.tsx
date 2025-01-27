@@ -11,11 +11,7 @@ import { useAuth } from "../helpers/AuthContext";
 import { router } from "expo-router";
 import AuthForm from "../../components/AuthForm";
 
-const buildServerIp = (ip: string, port: number) => {
-  return `http://${ip}:${port}`;
-};
-
-const serverip = buildServerIp(String(process.env.EXPO_PUBLIC_SERVERIP), 6969);
+const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 const login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -35,13 +31,16 @@ const login = () => {
   const onSubmit = async (data: any) => {
     setErrorMessage("");
     try {
-      const loginResponse = await axios.post(serverip + "/users/login", data);
+      const loginResponse = await axios.post(
+        `http://${serverip}:6969/users/login`,
+        data
+      );
 
       if (loginResponse.data.error)
         return setErrorMessage(loginResponse.data.error);
 
       const userResponse = await axios.get(
-        serverip + `/users/` + data.username
+        `http://${serverip}:6969/users/${data.username}`
       );
 
       if (userResponse.data.error)
@@ -70,7 +69,7 @@ const login = () => {
     setErrorMessage("Loading...");
 
     setTimeout(() => {
-      axios.get(serverip + `/users/` + username).then((res) => {
+      axios.get(`http://${serverip}:6969/users/${username}`).then((res) => {
         if (res.data.error) return setErrorMessage(res.data.error);
 
         setErrorMessage("");

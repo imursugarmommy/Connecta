@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
     });
   });
 
-  res.json("User created");
+  res.json({ message: "User created" });
 });
 
 // log into account

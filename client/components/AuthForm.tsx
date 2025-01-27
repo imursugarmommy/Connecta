@@ -61,7 +61,9 @@ export default function AuthForm({
                       placeholder={capitalizedKey}
                       error={errors[key] && touched[key]}
                       checkUsername={
-                        key === "username" ? checkForUsername : null
+                        key === "username" || key === "email"
+                          ? checkForUsername
+                          : null
                       }
                     />
                     {errorMessage === "Username already exists" ||
@@ -88,16 +90,16 @@ export default function AuthForm({
                 className="bg-[#FFD343] py-2 rounded-md w-full items-center"
                 disabled={
                   objectKeysArr.some((key) => errors[key] && touched[key]) ||
-                  errorMessage === "Username already exists" ||
-                  errorMessage === "Username does not exist"
+                  (errorMessage &&
+                    errorMessage !== "Wrong username or password")
                     ? true
                     : false
                 }
                 style={{
                   backgroundColor:
                     objectKeysArr.some((key) => errors[key] && touched[key]) ||
-                    errorMessage === "Username already exists" ||
-                    errorMessage === "Username does not exist"
+                    (errorMessage &&
+                      errorMessage !== "Wrong username or password")
                       ? "rgba(255, 211, 67, 0.2)"
                       : "#FFD343",
                 }}>
@@ -128,7 +130,7 @@ const CustomInput = ({
       value={field.value}
       onChangeText={(text) => {
         form.handleChange(field.name)(text);
-        if (checkUsername) checkUsername(text);
+        if (checkUsername) checkUsername(text, field.name);
       }}
       onBlur={form.handleBlur(field.name)}
       secureTextEntry={field.name === "password"}

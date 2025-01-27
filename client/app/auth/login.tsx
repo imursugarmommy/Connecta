@@ -30,6 +30,7 @@ const login = () => {
 
   const onSubmit = async (data: any) => {
     setErrorMessage("");
+
     try {
       const loginResponse = await axios.post(
         `http://${serverip}:6969/users/login`,
@@ -65,12 +66,12 @@ const login = () => {
     }
   };
 
-  const checkForUsername = (username: string) => {
-    setErrorMessage("Loading...");
+  const checkForUsername = (username: string, name: string) => {
+    setErrorMessage(`Checking ${name} ...`);
 
     setTimeout(() => {
       axios.get(`http://${serverip}:6969/users/${username}`).then((res) => {
-        if (res.data.error) return setErrorMessage(res.data.error);
+        if (res.data.error) return setErrorMessage("Username does not exist");
 
         setErrorMessage("");
       });

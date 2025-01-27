@@ -7,6 +7,7 @@ require("dotenv").config();
 const { sign } = require("jsonwebtoken");
 
 const { validateToken } = require("../middleware/AuthMiddleware");
+const { where, Op } = require("sequelize");
 
 // get all users
 router.get("/", async (req, res) => {
@@ -58,18 +59,19 @@ router.get("/auth", validateToken, async (req, res) => {
   res.json(req.user);
 });
 
-router.get("/:username", async (req, res) => {
-  const { username } = req.params;
+router.get("/:input", async (req, res) => {
+  const { input } = req.params;
 
-  const user = await Users.findOne({
+  const users = await Users.findAll({
     where: {
-      username,
+      [Op.or]: [{ username: input }, { email: input }],
     },
   });
 
-  if (!user) return res.json({ error: "User does not exist" });
+  if (!users || users.length === 0)
+    return res.json({ error: "No matching users found" });
 
-  res.json(user);
+  res.json(users);
 });
 
 module.exports = router;

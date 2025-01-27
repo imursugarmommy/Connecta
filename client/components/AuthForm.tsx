@@ -3,6 +3,10 @@ import { View, Text, TextInput, TouchableOpacity } from "react-native";
 
 import { Formik, Field, ErrorMessage } from "formik/dist/index";
 
+function capitalizeFirstLetter(val: string) {
+  return val.charAt(0).toUpperCase() + val.slice(1);
+}
+
 export default function AuthForm({
   validationSchema,
   initialValues,
@@ -19,10 +23,6 @@ export default function AuthForm({
   checkForUsername?: any;
 }) {
   const objectKeysArr = Object.keys(initialValues);
-
-  function capitalizeFirstLetter(val: string) {
-    return val.charAt(0).toUpperCase() + String(val).slice(1);
-  }
 
   return (
     <View className="w-full">
@@ -66,13 +66,13 @@ export default function AuthForm({
                           : null
                       }
                     />
-                    {errorMessage === "Username already exists" ||
-                      (errorMessage === "Username does not exist" &&
-                        key === "username" && (
-                          <Text className="text-red-500 text-lg absolute right-0">
-                            X
-                          </Text>
-                        ))}
+                    {(errorMessage === `${capitalizedKey} already exists` ||
+                      errorMessage === "Username does not exist") &&
+                      (key === "username" || key === "email") && (
+                        <Text className="text-red-500 text-lg absolute right-0">
+                          X
+                        </Text>
+                      )}
                   </View>
                 </View>
               );
@@ -130,7 +130,8 @@ const CustomInput = ({
       value={field.value}
       onChangeText={(text) => {
         form.handleChange(field.name)(text);
-        if (checkUsername) checkUsername(text, field.name);
+        if (checkUsername)
+          checkUsername(text, capitalizeFirstLetter(field.name));
       }}
       onBlur={form.handleBlur(field.name)}
       secureTextEntry={field.name === "password"}

@@ -135,6 +135,7 @@ const CustomInput = ({
       }}
       onBlur={form.handleBlur(field.name)}
       secureTextEntry={field.name === "password"}
+      keyboardType={field.name === "email" ? "email-address" : "default"}
       {...props}
       className="border-b-1 rounded-md p-3 mb-2 w-full text-text-light dark:text-text-dark"
       style={{

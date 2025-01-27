@@ -70,9 +70,14 @@ const login = () => {
   };
 
   const checkForUsername = (username: string, name: string) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
     setErrorMessage(`Checking ${name} ...`);
 
     setTimeout(() => {
+      if (name === "Email" && !emailPattern.test(username))
+        return setErrorMessage("Email is not valid");
+
       axios.get(`http://${serverip}:6969/users/${username}`).then((res) => {
         if (res.data.error) return setErrorMessage("");
 

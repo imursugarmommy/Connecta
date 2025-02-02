@@ -24,21 +24,33 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: () => <FontAwesome6 name="house" size={24} color="white" />,
+          tabBarIcon: () => (
+            colorScheme === 'dark'
+            ? <Octicons name="home" size={24} color="white" />
+            : <Octicons name="home" size={24} color="black"/>
+          ),
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: 'Suche',
-          tabBarIcon: () => <Octicons name="search" size={24} color="white" />,
+          tabBarIcon: () => (
+            colorScheme === 'dark'
+            ? <Octicons name="search" size={24} color="white" />
+            : <Octicons name="search" size={24} color="black"/>
+          ),
         }}
       />
       <Tabs.Screen
         name="two"
         options={{
           title: 'Profile',
-          tabBarIcon: () => <FontAwesome name="user" size={24} color="white" />,
+          tabBarIcon: () => (
+            colorScheme === 'dark'
+            ? <Octicons name="person" size={24} color="white" />
+            : <Octicons name="person" size={24} color="black"/>
+          ),
         }}
       />
     </Tabs>

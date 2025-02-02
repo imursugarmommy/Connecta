@@ -17,7 +17,7 @@ const Post = ({ post }: { post: Post }) => {
         <Text className="text-2xl text-white">{post.title}</Text>
       </View>
       <View className="w-full bg-white dark:bg-[#242732] h-32 items-center justify-center">
-        <Text className="text-xl">{post.content}</Text>
+        <Text className="text-xl dark:text-white">{post.content}</Text>
       </View>
       <View className="w-full flex-row bg-gray-500 p-3">
         <View className="bg-transparent">

@@ -1,54 +1,36 @@
 import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Text, View } from "@/components/Themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import PostTemplate from "../../components/PostTemplate";
 import { router } from "expo-router";
 
+import axios from "axios";
+
+type Post = {
+  id: number;
+  title: string;
+  content: string;
+  username: string;
+  comments: number;
+  likes: number;
+};
+
 export default function HomeScreen() {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "Eilmeldung",
-      content: "Younes ist schwul",
-      username: "Dragoneisbaer",
-      comments: 30,
-      likes: 5000,
-    },
-    {
-      id: 2,
-      title: "Post 2",
-      content: "Content 2",
-      username: "User 2",
-      comments: 2,
-      likes: 10,
-    },
-    {
-      id: 3,
-      title: "Post 3",
-      content: "Content 3",
-      username: "User 3",
-      comments: 0,
-      likes: 0,
-    },
-    {
-      id: 4,
-      title: "Post 4",
-      content: "Content 1",
-      username: "User 1",
-      comments: 0,
-      likes: 0,
-    },
-    {
-      id: 5,
-      title: "Post 5",
-      content: "Content 1",
-      username: "User 1",
-      comments: 0,
-      likes: 5,
-    },
-  ]);
+
+  const [posts, setPosts] = useState<Post[]>([]);
+  const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
+  useEffect(() => {
+    axios.get(`http://${serverip}:6969/posts`,)
+        .then((response) => {
+          setPosts(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }, []);
 
   return (
     <View className="flex-1 items-center">
@@ -66,13 +48,21 @@ export default function HomeScreen() {
         darkColor="rgb(255, 255, 255)"
       />
       <ScrollView className="w-full h-full p-4">
-        {posts.map((post) => (
-          <TouchableOpacity
-            onPress={() => router.push(`/post/${post.id}` as any)}
-            key={post.id}>
-            <PostTemplate post={post} />
-          </TouchableOpacity>
-        ))}
+      {posts.length === 0 ? (
+          <View className="w-full bg-red-200 mb-6 rounded-md overflow-hidden">
+            <View className="w-full p-3 justify-center items-center flex">
+              <Text className="text-2xl text-black dark:text-white">Keine Posts gefunden</Text>
+            </View>
+          </View>
+        ) : (
+          posts.map((post) => (
+            <TouchableOpacity
+              onPress={() => router.push(`/post/${post.id}` as any)}
+              key={post.id}>
+              <PostTemplate post={post} />
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </View>
   );

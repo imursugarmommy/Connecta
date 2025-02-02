@@ -53,13 +53,21 @@ export default function SearchScreen() {
         />
       </View>
       <ScrollView className="w-full h-full p-4">
-        {posts.map((post) => (
-          <TouchableOpacity
-            onPress={() => router.push(`/post/${post.id}` as any)}
-            key={post.id}>
-            <PostTemplate post={post} />
-          </TouchableOpacity>
-        ))}
+      {posts.length === 0 ? (
+          <View className="w-full bg-red-200 mb-6 rounded-md overflow-hidden">
+            <View className="w-full p-3 justify-center items-center flex">
+              <Text className="text-2xl text-black dark:text-white">Keine Posts mit dem Content: {search} gefunden</Text>
+            </View>
+          </View>
+        ) : (
+          posts.map((post) => (
+            <TouchableOpacity
+              onPress={() => router.push(`/post/${post.id}` as any)}
+              key={post.id}>
+              <PostTemplate post={post} />
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </View>
   );

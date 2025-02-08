@@ -63,7 +63,7 @@ export default function SearchScreen() {
           />
 
           <TextInput
-            className="dark:text-white text-center h-full p-0"
+            className="dark:text-white h-full p-0 w-full"
             placeholder="Nach was suchst du diesmal?"
             placeholderTextColor={colorScheme === "dark" ? "white" : "gray"}
             onChangeText={updateSearch}
@@ -73,23 +73,15 @@ export default function SearchScreen() {
       </View>
       <ScrollView className="w-full h-full p-4">
         {posts.length === 0 ? (
-          search === "" ? (
-            <View className="w-full bg-red-200 mb-6 rounded-md overflow-hidden">
-              <View className="w-full p-3 justify-center items-center flex">
-                <Text className="text-xl text-black dark:text-white">
-                  Such nach einem Post
-                </Text>
-              </View>
+          <View className="w-full bg-red-200 mb-6 rounded-md overflow-hidden">
+            <View className="w-full p-3 justify-center items-center flex">
+              <Text className="text-xl text-black dark:text-white">
+                {search === ""
+                  ? "Keine Posts gefunden"
+                  : `Keine Posts mit dem Content "${search}" gefunden`}
+              </Text>
             </View>
-          ) : (
-            <View className="w-full bg-red-200 mb-6 rounded-md overflow-hidden">
-              <View className="w-full p-3 justify-center items-center flex">
-                <Text className="text-xl text-black dark:text-white">
-                  Keine Posts mit dem Content "{search}" gefunden
-                </Text>
-              </View>
-            </View>
-          )
+          </View>
         ) : (
           posts.map((post) => (
             <TouchableOpacity

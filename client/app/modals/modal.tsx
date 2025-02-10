@@ -17,6 +17,8 @@ const moadal = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
   useEffect(() => {
     if (textInputRef.current) {
       setTimeout(() => {
@@ -27,15 +29,11 @@ const moadal = () => {
 
   const onSubmit = () => {
     if (!content || !title) return;
-    const username = "placeholder";
-    const UserId = 4;
 
     axios
-      .post("http://192.168.178.170:6969/posts/", {
+      .post(`http://${serverip}:6969/posts/`, {
         title,
         content,
-        username,
-        UserId,
       })
       .then(() => {
         if (router.canGoBack()) {

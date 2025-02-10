@@ -12,6 +12,8 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
 
+import AuthProvider from "./helpers/AuthContext";
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -54,20 +56,22 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="modals/modal"
-          options={{ presentation: "modal" }}
-        />
-        <Stack.Screen
-          name="post/[id]"
-          options={{ title: "Post Overview", headerBackTitle: "Back" }}
-        />
-      </Stack>
+      <AuthProvider>
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="modals/modal"
+            options={{ presentation: "modal" }}
+          />
+          <Stack.Screen
+            name="post/[id]"
+            options={{ title: "Post Overview", headerBackTitle: "Back" }}
+          />
+        </Stack>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

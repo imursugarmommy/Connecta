@@ -1,59 +1,27 @@
-import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native";
 
 import { Text, View } from "@/components/Themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import PostTemplate from "../../components/PostTemplate";
 import { Link, router } from "expo-router";
 import Divider from "@/components/ui/Divider";
 
 import { useAuth } from "./../helpers/AuthContext";
+import axios from "axios";
+import { Post } from "../../types/Post";
 
 export default function HomeScreen() {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "Eilmeldung",
-      content: "Younes ist schwul",
-      username: "Dragoneisbaer",
-      comments: 30,
-      likes: 5000,
-    },
-    {
-      id: 2,
-      title: "Post 2",
-      content: "Content 2",
-      username: "User 2",
-      comments: 2,
-      likes: 10,
-    },
-    {
-      id: 3,
-      title: "Post 3",
-      content: "Content 3",
-      username: "User 3",
-      comments: 0,
-      likes: 0,
-    },
-    {
-      id: 4,
-      title: "Post 4",
-      content: "Content 1",
-      username: "User 1",
-      comments: 0,
-      likes: 0,
-    },
-    {
-      id: 5,
-      title: "Post 5",
-      content: "Content 1",
-      username: "User 1",
-      comments: 0,
-      likes: 5,
-    },
-  ]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const { authState } = useAuth();
+  const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
+  useEffect(() => {
+    axios.get(`http://${serverip}:6969/posts`).then((res) => {
+      setPosts(res.data);
+    });
+  }, []);
 
   return (
     <View className="flex-1 items-center">
@@ -68,23 +36,27 @@ export default function HomeScreen() {
 
       <Divider />
 
-      <Text>{JSON.stringify(authState, null, 2)}</Text>
-
-      <Link
-        href="/auth/login"
-        className="text-blue-500 my-4">
-        Sign in
-      </Link>
-      <Link
-        href="/auth/register"
-        className="text-blue-500 my-4">
-        Register
-      </Link>
+      {authState.state ? (
+        <Text>{JSON.stringify(authState, null, 2)}</Text>
+      ) : (
+        <>
+          <Link
+            href="/auth/login"
+            className="text-blue-500 my-4">
+            Sign in
+          </Link>
+          <Link
+            href="/auth/register"
+            className="text-blue-500 my-4">
+            Register
+          </Link>
+        </>
+      )}
 
       <Divider />
 
       <ScrollView className="w-full h-full p-4">
-        {posts.map((post) => (
+        {posts.map((post: Post) => (
           <TouchableOpacity
             onPress={() => router.push(`/post/${post.id}` as any)}
             key={post.id}>

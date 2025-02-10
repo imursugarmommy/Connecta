@@ -1,16 +1,8 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { Post } from "../types/Post";
 
-interface Post {
-  id: number;
-  username: string;
-  title: string;
-  content: string;
-  comments: number;
-  likes: number;
-}
-
-const Post = ({ post }: { post: Post }) => {
+const PostTemplate = ({ post }: { post: Post }) => {
   return (
     <View className="w-full bg-red-200 mb-6 rounded-md overflow-hidden">
       <View className="w-full bg-gray-500 p-3">
@@ -32,4 +24,4 @@ const Post = ({ post }: { post: Post }) => {
   );
 };
 
-export default Post;
+export default PostTemplate;

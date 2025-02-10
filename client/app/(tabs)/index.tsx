@@ -4,7 +4,10 @@ import { Text, View } from "@/components/Themed";
 import { useState } from "react";
 
 import PostTemplate from "../../components/PostTemplate";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
+import Divider from "@/components/ui/Divider";
+
+import { useAuth } from "./../helpers/AuthContext";
 
 export default function HomeScreen() {
   const [posts, setPosts] = useState([
@@ -50,6 +53,8 @@ export default function HomeScreen() {
     },
   ]);
 
+  const { authState } = useAuth();
+
   return (
     <View className="flex-1 items-center">
       <View
@@ -60,11 +65,24 @@ export default function HomeScreen() {
       <View className="w-full p-4 items-center">
         <Text className="text-2xl font-bold">Neue Posts für dich</Text>
       </View>
-      <View
-        className="h-px w-4/5"
-        lightColor="#eee"
-        darkColor="rgb(255, 255, 255)"
-      />
+
+      <Divider />
+
+      <Text>{JSON.stringify(authState, null, 2)}</Text>
+
+      <Link
+        href="/auth/login"
+        className="text-blue-500 my-4">
+        Sign in
+      </Link>
+      <Link
+        href="/auth/register"
+        className="text-blue-500 my-4">
+        Register
+      </Link>
+
+      <Divider />
+
       <ScrollView className="w-full h-full p-4">
         {posts.map((post) => (
           <TouchableOpacity

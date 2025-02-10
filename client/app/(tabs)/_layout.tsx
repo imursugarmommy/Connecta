@@ -2,21 +2,17 @@ import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Octicons from "@expo/vector-icons/Octicons";
-import { router, Tabs } from "expo-router";
-
+import { Link, router, Tabs } from "expo-router";
+import { Pressable } from "react-native";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 
-import CheckAuth from "../helpers/CheckAuth";
-
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-
-<CheckAuth>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
@@ -96,6 +92,5 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-    </CheckAuth>
   );
 }

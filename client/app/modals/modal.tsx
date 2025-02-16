@@ -8,10 +8,14 @@ import {
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
 import { router } from "expo-router";
+import axios from "axios";
+
+import Divider from "@/components/ui/Divider";
 
 const moadal = () => {
   const textInputRef = useRef<TextInput>(null);
-  const [text, setText] = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     if (textInputRef.current) {
@@ -22,9 +26,22 @@ const moadal = () => {
   }, []);
 
   const onSubmit = () => {
-    if (!text) return;
+    if (!content || !title) return;
+    const username = "placeholder";
+    const UserId = 4;
 
-    router.back();
+    axios
+      .post("http://192.168.178.170:6969/posts/", {
+        title,
+        content,
+        username,
+        UserId,
+      })
+      .then(() => {
+        if (router.canGoBack()) {
+          router.back();
+        }
+      });
   };
 
   return (
@@ -39,26 +56,35 @@ const moadal = () => {
             resizeMode: "contain",
           }}
         />
-        <TextInput
-          ref={textInputRef}
-          value={text}
-          onChangeText={(text) => setText(text)}
-          placeholder="What's on your mind?"
-          className="ml-4 flex-1"
-          multiline={true}
-        />
+        <View className="flex-grow">
+          <TextInput
+            ref={textInputRef}
+            value={title}
+            onChangeText={(title) => setTitle(title)}
+            placeholder="What's do you want to talk about?"
+            className="p-2 w-full text-sm font-semibold"
+            // multiline={true}
+            // numberOfLines={1}
+          />
+
+          <Divider />
+
+          <TextInput
+            value={content}
+            onChangeText={(content) => setContent(content)}
+            placeholder="What's on your mind?"
+            className="flex-1 w-full p-2"
+            multiline={true}
+          />
+        </View>
       </View>
 
       <KeyboardAvoidingView
         behavior={"padding"}
         keyboardVerticalOffset={140}
         className="flex-row gap-x-2">
-        <View className="flex-grow bg-gray-100 p-2 rounded-md">
-          <Text>ToolBox</Text>
-        </View>
-
         <TouchableOpacity
-          className="px-4 py-2 bg-[#ffd455] rounded-2xl"
+          className="flex-grow items-center px-4 py-2 bg-[#ffd455] rounded-2xl"
           onPress={() => onSubmit()}>
           <Text className="text-white">Post</Text>
         </TouchableOpacity>

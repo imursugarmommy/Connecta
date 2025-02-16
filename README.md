@@ -12,7 +12,7 @@ cd server
 npm install
 ```
 
-create .env file and add the following
+create .env file in the **server** directory and add the following
 
 ```.env
 DB_USERNAME = ""
@@ -21,6 +21,12 @@ DB_DATABASE = ""
 DB_HOST = ""
 
 JWT_SECRET = ""
+```
+
+create .env file in the **client** directory and add the following
+
+```.env
+EXPO_PUBLIC_SERVERIP = ""
 ```
 
 start server and client
@@ -34,4 +40,3 @@ npm start
 cd server
 npm start
 ```
-# Connecta

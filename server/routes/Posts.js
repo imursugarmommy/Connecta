@@ -4,7 +4,10 @@ const { Posts } = require("../models");
 const { validateToken } = require("../middleware/AuthMiddleware");
 
 router.get("/", async (req, res) => {
-  const postList = await Posts.findAll();
+  const postList = await Posts.findAll({
+    limit: 50,
+    order: [["updatedAt", "DESC"]],
+  });
 
   res.json(postList);
 });

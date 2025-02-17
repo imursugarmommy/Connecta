@@ -10,12 +10,11 @@ import Divider from "@/components/ui/Divider";
 import { useAuth } from "./../helpers/AuthContext";
 import axios from "axios";
 import { Post } from "../../types/Post";
-import compTest from "../compTests";
 
 export default function HomeScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const { authState } = useAuth();
+  const { logout, authState } = useAuth();
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
   useEffect(() => {
@@ -53,6 +52,10 @@ export default function HomeScreen() {
           </Link>
         </>
       )}
+
+      <TouchableOpacity onPress={() => logout()}>
+        <Text>Logout</Text>
+      </TouchableOpacity>
 
       <Divider orientation="horizontal" />
 

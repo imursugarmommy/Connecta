@@ -9,12 +9,15 @@ import {
 import React, { useRef, useEffect, useState } from "react";
 import { router } from "expo-router";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Divider from "@/components/ui/Divider";
 
+import { ImagePlus, Camera } from "lucide-react-native";
+
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
-const moadal = () => {
+const Modal = () => {
   const textInputRef = useRef<TextInput>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -27,17 +30,12 @@ const moadal = () => {
     }
   }, []);
 
-  const onSubmit = () => {
+  const onSubmit = async (data: { title: string; content: string }) => {
     if (!content || !title) return;
-    const username = "placeholder";
-    const UserId = 4;
 
     axios
-      .post(`http://${serverip}:6969/posts/`, {
-        title,
-        content,
-        username,
-        UserId,
+      .post(`http://${serverip}:6969/posts/`, data, {
+        headers: { accessToken: await AsyncStorage.getItem("accessToken") },
       })
       .then(() => {
         if (router.canGoBack()) {
@@ -80,12 +78,24 @@ const moadal = () => {
       </View>
 
       <KeyboardAvoidingView
-        behavior={"position"}
+        behavior={"padding"}
         keyboardVerticalOffset={125}
         className="absolute bottom-0 w-full">
-        <View className="flex-row w-full justify-between items-center py-2 bg-gray-100">
-          <View className="flex-row flex-grow py-2 items-center justify-between">
-            <Text>Toolbar</Text>
+        <View className="flex-row w-full justify-between items-center p-2 bg-gray-100">
+          <View className="flex-row flex-grow items-center justify-between">
+            <TouchableOpacity className="p-2">
+              <ImagePlus
+                size={24}
+                color="#ffd455"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity className="p-2">
+              <Camera
+                size={24}
+                color="#ffd455"
+              />
+            </TouchableOpacity>
           </View>
 
           <View>
@@ -94,7 +104,7 @@ const moadal = () => {
 
           <TouchableOpacity
             className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl "
-            onPress={() => onSubmit()}>
+            onPress={() => onSubmit({ title, content })}>
             <Text className="text-white">Post</Text>
           </TouchableOpacity>
         </View>
@@ -103,4 +113,4 @@ const moadal = () => {
   );
 };
 
-export default moadal;
+export default Modal;

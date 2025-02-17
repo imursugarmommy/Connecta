@@ -10,6 +10,7 @@ import Divider from "@/components/ui/Divider";
 import { useAuth } from "./../helpers/AuthContext";
 import axios from "axios";
 import { Post } from "../../types/Post";
+import compTest from "../compTests";
 
 export default function HomeScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -34,7 +35,7 @@ export default function HomeScreen() {
         <Text className="text-2xl font-bold">Neue Posts für dich</Text>
       </View>
 
-      <Divider />
+      <Divider orientation="horizontal" />
 
       {authState.state ? (
         <Text>{JSON.stringify(authState, null, 2)}</Text>
@@ -53,7 +54,7 @@ export default function HomeScreen() {
         </>
       )}
 
-      <Divider />
+      <Divider orientation="horizontal" />
 
       <ScrollView className="w-full h-full p-4">
         {posts.map((post: Post) => (

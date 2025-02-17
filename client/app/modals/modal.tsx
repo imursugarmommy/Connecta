@@ -65,7 +65,7 @@ const moadal = () => {
             className="p-2 w-full text-sm font-semibold"
           />
 
-          <Divider />
+          <Divider orientation="horizontal" />
 
           <TextInput
             value={content}
@@ -78,15 +78,17 @@ const moadal = () => {
       </View>
 
       <KeyboardAvoidingView
-        behavior={"padding"}
+        behavior={"position"}
         keyboardVerticalOffset={125}
         className="absolute bottom-0 w-full">
-        <View className="flex-row w-full justify-between items-center">
-          <View className="flex-row flex-grow py-2 items-center justify-center">
+        <View className="flex-row w-full justify-between items-center py-2 bg-gray-100">
+          <View className="flex-row flex-grow py-2 items-center justify-between">
             <Text>Toolbar</Text>
           </View>
 
-          <View className="h-full w-px mx-2 bg-gray-300"></View>
+          <View>
+            <Divider orientation="vertical" />
+          </View>
 
           <TouchableOpacity
             className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl "

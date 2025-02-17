@@ -8,18 +8,19 @@ import { Link, router } from "expo-router";
 import Divider from "@/components/ui/Divider";
 
 import { useAuth } from "./../helpers/AuthContext";
+import { usePosts } from "../helpers/PostContext";
 import axios from "axios";
 import { Post } from "../../types/Post";
 
 export default function HomeScreen() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const { postState, setPostState } = usePosts();
 
   const { logout, authState } = useAuth();
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
   useEffect(() => {
     axios.get(`http://${serverip}:6969/posts`).then((res) => {
-      setPosts(res.data);
+      setPostState(res.data);
     });
   }, []);
 
@@ -60,10 +61,10 @@ export default function HomeScreen() {
       <Divider orientation="horizontal" />
 
       <ScrollView className="w-full h-full p-4">
-        {posts.map((post: Post) => (
+        {postState.map((post: Post, index: number) => (
           <TouchableOpacity
             onPress={() => router.push(`/post/${post.id}` as any)}
-            key={post.id}>
+            key={post.id || index}>
             <PostTemplate post={post} />
           </TouchableOpacity>
         ))}

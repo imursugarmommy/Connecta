@@ -10,6 +10,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { router } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { usePosts } from "../helpers/PostContext";
 
 import Divider from "@/components/ui/Divider";
 
@@ -22,6 +23,8 @@ const Modal = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  const { addItem } = usePosts();
+
   useEffect(() => {
     if (textInputRef.current) {
       setTimeout(() => {
@@ -33,15 +36,9 @@ const Modal = () => {
   const onSubmit = async (data: { title: string; content: string }) => {
     if (!content || !title) return;
 
-    axios
-      .post(`http://${serverip}:6969/posts/`, data, {
-        headers: { accessToken: await AsyncStorage.getItem("accessToken") },
-      })
-      .then(() => {
-        if (router.canGoBack()) {
-          router.back();
-        }
-      });
+    addItem(data);
+
+    if (router.canGoBack()) router.back();
   };
 
   return (
@@ -71,7 +68,7 @@ const Modal = () => {
             value={content}
             onChangeText={(content) => setContent(content)}
             placeholder="What's on your mind?"
-            className="w-full p-2  h-60"
+            className="max-w-full p-2 h-60"
             multiline={true}
           />
         </View>

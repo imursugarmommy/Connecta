@@ -12,6 +12,8 @@ import axios from "axios";
 
 import Divider from "@/components/ui/Divider";
 
+const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
 const moadal = () => {
   const textInputRef = useRef<TextInput>(null);
   const [title, setTitle] = useState("");
@@ -31,7 +33,7 @@ const moadal = () => {
     const UserId = 4;
 
     axios
-      .post("http://192.168.178.170:6969/posts/", {
+      .post(`http://${serverip}:6969/posts/`, {
         title,
         content,
         username,

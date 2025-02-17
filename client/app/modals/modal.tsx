@@ -45,8 +45,8 @@ const moadal = () => {
   };
 
   return (
-    <View className="flex-1 bg-white p-4 flex justify-between">
-      <View className="flex-row flex-1">
+    <View className="flex-1 bg-white flex justify-between">
+      <View className="flex-row  m-4">
         <Image
           source={require("../../assets/images/favicon.png")}
           style={{
@@ -63,8 +63,6 @@ const moadal = () => {
             onChangeText={(title) => setTitle(title)}
             placeholder="What's do you want to talk about?"
             className="p-2 w-full text-sm font-semibold"
-            // multiline={true}
-            // numberOfLines={1}
           />
 
           <Divider />
@@ -73,7 +71,7 @@ const moadal = () => {
             value={content}
             onChangeText={(content) => setContent(content)}
             placeholder="What's on your mind?"
-            className="flex-1 w-full p-2"
+            className="w-full p-2  h-60"
             multiline={true}
           />
         </View>
@@ -81,13 +79,21 @@ const moadal = () => {
 
       <KeyboardAvoidingView
         behavior={"padding"}
-        keyboardVerticalOffset={140}
-        className="flex-row gap-x-2">
-        <TouchableOpacity
-          className="flex-grow items-center px-4 py-2 bg-[#ffd455] rounded-2xl"
-          onPress={() => onSubmit()}>
-          <Text className="text-white">Post</Text>
-        </TouchableOpacity>
+        keyboardVerticalOffset={125}
+        className="absolute bottom-0 w-full">
+        <View className="flex-row w-full justify-between items-center">
+          <View className="flex-row flex-grow py-2 items-center justify-center">
+            <Text>Toolbar</Text>
+          </View>
+
+          <View className="h-full w-px mx-2 bg-gray-300"></View>
+
+          <TouchableOpacity
+            className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl "
+            onPress={() => onSubmit()}>
+            <Text className="text-white">Post</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     </View>
   );

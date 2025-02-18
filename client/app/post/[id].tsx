@@ -26,7 +26,7 @@ interface Comment {
 }
 
 function Post() {
-  const { setPostState } = usePosts();
+  const { postState, setPostState } = usePosts();
 
   let { id } = useLocalSearchParams();
 
@@ -62,6 +62,15 @@ function Post() {
       });
     });
   }, []);
+
+  useEffect(() => {
+    const foundPost = postState.find(
+      (post: PostType) => post.id === parseInt(id as string)
+    );
+    if (foundPost) {
+      setPostObj(foundPost);
+    }
+  }, [postState, id]);
 
   if (Object.keys(postObj).length === 0 && postObj.constructor === Object)
     return <Text>Loading...</Text>;
@@ -135,7 +144,11 @@ function Post() {
     <View className="flex-1 bg-white">
       <ScrollView className="flex-1 p-4">
         <View className="items-center">
-          <PostTemplate post={postObj} />
+          <PostTemplate
+            post={postObj}
+            postState={postState}
+            setPostState={setPostState}
+          />
         </View>
         <View className="w-full items-center">
           <View className="w-full items-center">

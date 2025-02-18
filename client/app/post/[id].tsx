@@ -63,7 +63,8 @@ function Post() {
     });
   }, []);
 
-  console.log("postObj: ", postObj);
+  if (Object.keys(postObj).length === 0 && postObj.constructor === Object)
+    return <Text>Loading...</Text>;
 
   const addComment = async () => {
     axios

@@ -1,7 +1,7 @@
 import { ScrollView, TouchableOpacity } from "react-native";
 
 import { Text, View } from "@/components/Themed";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import PostTemplate from "../../components/PostTemplate";
 import { Link, router } from "expo-router";
@@ -13,7 +13,7 @@ import axios from "axios";
 import { Post } from "../../types/Post";
 
 export default function HomeScreen() {
-  const { postState, setPostState } = usePosts();
+  const { postState, setPostState, removeItem } = usePosts();
 
   const { logout, authState } = useAuth();
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
@@ -69,6 +69,7 @@ export default function HomeScreen() {
               post={post}
               postState={postState}
               setPostState={setPostState}
+              removeItem={removeItem}
             />
           </TouchableOpacity>
         ))}

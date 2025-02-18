@@ -35,4 +35,13 @@ router.post("/", validateToken, async (req, res) => {
   res.json(post);
 });
 
+router.delete("/:postId", validateToken, async (req, res) => {
+  // req.params graps number entered in url
+  const postId = req.params.postId;
+
+  await Posts.destroy({ where: { id: postId } });
+
+  res.json("Post Deleted");
+});
+
 module.exports = router;

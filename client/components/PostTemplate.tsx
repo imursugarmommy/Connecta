@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Post } from "../types/Post";
 import { useAuth } from "@/app/helpers/AuthContext";
+import { usePosts } from "@/app/helpers/PostContext";
 
 import { Trash2, ThumbsUp, MessageCircle } from "lucide-react-native";
 import axios from "axios";
@@ -10,14 +11,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
+// TODO: handle validation errors
 const PostTemplate = ({
   post,
   postState,
   setPostState,
+  removeItem,
 }: {
   post: Post;
   postState: Post[];
   setPostState: React.Dispatch<React.SetStateAction<Post[]>>;
+  removeItem: (id: number) => void;
 }) => {
   const { authState } = useAuth();
 
@@ -62,10 +66,12 @@ const PostTemplate = ({
         <Text className="text-2xl text-white">{post.title}</Text>
 
         {authState.username === post.username && (
-          <Trash2
-            size={18}
-            color="white"
-          />
+          <TouchableOpacity onPress={() => removeItem(post.id)}>
+            <Trash2
+              size={18}
+              color="white"
+            />
+          </TouchableOpacity>
         )}
       </View>
       <View className="w-full bg-white dark:bg-[#242732] h-32 items-center justify-center">

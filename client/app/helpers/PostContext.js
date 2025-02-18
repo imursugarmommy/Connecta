@@ -34,6 +34,8 @@ export const PostProvider = ({ children }) => {
         },
       })
       .then(() => {
+        setPostState((prev) => prev.filter((item) => item.id !== id));
+
         router.push("/");
       });
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { AuthContext } from "@/app/helpers/AuthContext";
@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Post as PostType } from "@/types/Post";
 
 import { usePosts } from "../helpers/PostContext";
+import { useAuth } from "../helpers/AuthContext";
 
 interface Comment {
   id: number;
@@ -26,7 +27,7 @@ interface Comment {
 }
 
 function Post() {
-  const { postState, setPostState } = usePosts();
+  const { postState, setPostState, removeItem } = usePosts();
 
   let { id } = useLocalSearchParams();
 
@@ -34,7 +35,7 @@ function Post() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
 
-  const { authState } = useContext(AuthContext);
+  const { authState } = useAuth();
 
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -138,6 +139,7 @@ function Post() {
       });
   };
 
+  // TODO: add loading spinner and styling
   if (!postObj) return <Text>Loading...</Text>;
 
   return (
@@ -148,6 +150,7 @@ function Post() {
             post={postObj}
             postState={postState}
             setPostState={setPostState}
+            removeItem={removeItem}
           />
         </View>
         <View className="w-full items-center">
@@ -166,14 +169,17 @@ function Post() {
                         <Text>{comment.commentBody}</Text>
                       </View>
                     </View>
+                    {/* TODO: fix wierd bug where the comment get deleted only after 3 times pressing */}
                     {authState.username === comment.username && (
                       <TouchableOpacity
                         onPress={() => deleteComment(comment.id)}
                         className="p-2">
-                        <Trash2
-                          color="black"
-                          size={16}
-                        />
+                        <TouchableOpacity>
+                          <Trash2
+                            color="black"
+                            size={16}
+                          />
+                        </TouchableOpacity>
                       </TouchableOpacity>
                     )}
                   </View>

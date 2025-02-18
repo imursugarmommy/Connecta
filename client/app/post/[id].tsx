@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { AuthContext } from "@/app/helpers/AuthContext";
 
@@ -17,6 +17,8 @@ import PostTemplate from "../../components/PostTemplate";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Post as PostType } from "@/types/Post";
 
+import { usePosts } from "../helpers/PostContext";
+
 interface Comment {
   id: number;
   username: string;
@@ -24,6 +26,8 @@ interface Comment {
 }
 
 function Post() {
+  const { setPostState } = usePosts();
+
   let { id } = useLocalSearchParams();
 
   const [postObj, setPostObj] = useState({} as PostType);
@@ -31,7 +35,6 @@ function Post() {
   const [newComment, setNewComment] = useState("");
 
   const { authState } = useContext(AuthContext);
-  // const navigate = useNavigate();
 
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -45,12 +48,22 @@ function Post() {
     axios.get(`http://${serverip}:6969/posts/byid/${id}`).then((res) => {
       const postObj = res.data[0];
 
-      postObj.likes = postObj.Likes.length;
-      postObj.comments = comments.length;
-
       setPostObj(postObj);
+
+      // update corresponding post in global state
+      setPostState((prev: any[]) => {
+        return prev.map((post) => {
+          if (post.id === postObj.id) {
+            return postObj;
+          } else {
+            return post;
+          }
+        });
+      });
     });
   }, []);
+
+  console.log("postObj: ", postObj);
 
   const addComment = async () => {
     axios
@@ -87,6 +100,36 @@ function Post() {
       });
   };
 
+  const deleteComment = async (id: number) => {
+    axios
+      .delete(`http://${serverip}:6969/comments/${id}`, {
+        headers: {
+          accessToken: await AsyncStorage.getItem("accessToken"),
+        },
+      })
+      .then(() => {
+        // remove comment from local state
+        setPostState((prev: any[]) => {
+          return prev.map((post) => {
+            if (post.id === postObj.id) {
+              post.Comments = post.Comments.filter(
+                (comment: Comment) => comment.id !== id
+              );
+            }
+            return post;
+          });
+        });
+
+        setComments(
+          comments.filter((val) => {
+            return val.id !== id;
+          })
+        );
+      });
+  };
+
+  if (!postObj) return <Text>Loading...</Text>;
+
   return (
     <View className="flex-1 bg-white">
       <ScrollView className="flex-1 p-4">
@@ -110,7 +153,9 @@ function Post() {
                       </View>
                     </View>
                     {authState.username === comment.username && (
-                      <TouchableOpacity className="p-2">
+                      <TouchableOpacity
+                        onPress={() => deleteComment(comment.id)}
+                        className="p-2">
                         <Trash2
                           color="black"
                           size={16}

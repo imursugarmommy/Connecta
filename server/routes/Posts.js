@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { Posts, Likes } = require("../models");
+const { Posts, Likes, Comments } = require("../models");
 const { validateToken } = require("../middleware/AuthMiddleware");
 
 router.get("/", async (req, res) => {
   const postList = await Posts.findAll({
-    include: [Likes],
+    include: [Likes, Comments],
     limit: 50,
     order: [["updatedAt", "DESC"]],
   });
@@ -17,7 +17,7 @@ router.get("/byid/:id", async (req, res) => {
   const id = req.params.id;
   const post = await Posts.findAll({
     where: { id: id },
-    include: [Likes],
+    include: [Likes, Comments],
   });
 
   res.json(post);
@@ -28,7 +28,7 @@ router.post("/", validateToken, async (req, res) => {
   const user = req.user;
 
   post.username = user.username;
-  post.userId = user.id;
+  post.UserId = user.id;
 
   await Posts.create(post);
 

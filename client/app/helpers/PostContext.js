@@ -27,7 +27,15 @@ export const PostProvider = ({ children }) => {
   };
 
   const removeItem = async (id) => {
-    // yet to come
+    axios
+      .delete(`http://${serverip}:6969/posts/${id}`, {
+        headers: {
+          accessToken: await AsyncStorage.getItem("accessToken"),
+        },
+      })
+      .then(() => {
+        router.push("/");
+      });
   };
 
   const updateItem = async (updatedItem) => {

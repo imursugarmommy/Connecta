@@ -14,161 +14,78 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import PostTemplate from "../../components/PostTemplate";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Post as PostType } from "@/types/Post";
+
+interface Comment {
+  id: number;
+  username: string;
+  commentBody: string;
+}
 
 function Post() {
   let { id } = useLocalSearchParams();
-  const [postObj, setPostObj] = useState({
-    id: 1,
-    title: "Cock",
-    content: "Koks und Heroin",
-    username: "imursugarmomm",
-    comments: 2,
-    likes: 310,
-  });
-  const [comments, setComments] = useState([
-    {
-      username: "lelv",
-      commentBody: "Not again",
-    },
-    {
-      username: "EpicGamer69420",
-      commentBody: "Fuck you man",
-    },
-  ]);
+
+  const [postObj, setPostObj] = useState({} as PostType);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
 
   const { authState } = useContext(AuthContext);
   // const navigate = useNavigate();
 
+  const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
   const maxCharLimit = 150;
 
-  // useEffect(() => {
-  //   axios.get(`http://localhost:3002/posts/byid/${id}`).then((res) => {
-  //     setPostObj(res.data);
-  //   });
+  useEffect(() => {
+    axios.get(`http://${serverip}:6969/comments/${id}`).then((res) => {
+      setComments(res.data);
+    });
 
-  //   axios.get(`http://localhost:3002/comments/${id}`).then((res) => {
-  //     setComments(res.data);
-  //   });
-  // }, []);
+    axios.get(`http://${serverip}:6969/posts/byid/${id}`).then((res) => {
+      const postObj = res.data[0];
 
-  // const addComment = () => {
-  //   axios
-  //     .post(
-  //       "http://localhost:3002/comments",
-  //       {
-  //         commentBody: newComment,
-  //         PostId: id,
-  //       },
-  //       // check if user is logged in
-  //       {
-  //         headers: {
-  //           accessToken: localStorage.getItem("accessToken"),
-  //         },
-  //       }
-  //     )
-  //     .then((res) => {
-  //       console.log(res.data);
+      postObj.likes = postObj.Likes.length;
+      postObj.comments = comments.length;
 
-  //       if (res.data.error) alert(res.data.error);
-  //       else {
-  //         const commentToAdd = {
-  //           commentBody: newComment,
-  //           username: res.data.username,
-  //           // ensure comment id is also in this object to prevent bug:
-  //           // newly added comments can not be deleted bc of missing id
-  //           id: res.data.id,
-  //         };
+      setPostObj(postObj);
+    });
+  }, []);
 
-  //         setComments([...comments, commentToAdd]);
+  const addComment = async () => {
+    axios
+      .post(
+        `http://${serverip}:6969/comments`,
+        {
+          commentBody: newComment,
+          PostId: id,
+        },
+        {
+          headers: {
+            accessToken: await AsyncStorage.getItem("accessToken"),
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.error) console.error(res.data.error);
+        else {
+          const commentToAdd = {
+            commentBody: newComment,
+            username: res.data.username,
+            // ensure comment id is also in this object to prevent bug:
+            // newly added comments can not be deleted bc of missing id
+            id: res.data.id,
+          };
 
-  //         setNewComment("");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //     });
-  // };
+          setComments([commentToAdd, ...comments]);
 
-  // const deleteComment = (id) => {
-  //   axios
-  //     .delete(
-  //       `http://localhost:3002/comments/${id}`,
-  //       // check if user is logged in
-  //       {
-  //         headers: {
-  //           accessToken: localStorage.getItem("accessToken"),
-  //         },
-  //       }
-  //     )
-  //     .then(() => {
-  //       setComments(
-  //         comments.filter((val) => {
-  //           // * next Time: prevent bug where comment is not deleted bc of missing id (include it in comments from beginning)
-  //           return val.id !== id;
-  //         })
-  //       );
-  //     });
-  // };
-
-  // const deletePost = (id) => {
-  //   axios
-  //     .delete(
-  //       `http://localhost:3002/posts/${id}`,
-  //       // check if user is logged in
-  //       {
-  //         headers: {
-  //           accessToken: localStorage.getItem("accessToken"),
-  //         },
-  //       }
-  //     )
-  //     .then(() => {
-  //       navigate("/");
-  //     });
-  // };
-
-  // const editPost = (option) => {
-  //   if (authState.username !== postObj.username) return;
-
-  //   if (option === "title") changeTitle();
-  //   else if (option === "body") changePostText();
-  // };
-
-  // function changeTitle() {
-  //   const newTitle = prompt("Enter new title:", postObj.title);
-
-  //   if (!newTitle) return;
-
-  //   axios.put(
-  //     `http://localhost:3002/posts/title`,
-  //     { newTitle, id },
-  //     {
-  //       headers: {
-  //         accessToken: localStorage.getItem("accessToken"),
-  //       },
-  //     }
-  //   );
-
-  //   setPostObj({ ...postObj, title: newTitle });
-  // }
-
-  // function changePostText() {
-  //   const newPostText = prompt("Enter new post text:", postObj.content);
-
-  //   if (!newPostText) return;
-
-  //   axios.put(
-  //     `http://localhost:3002/posts/postText`,
-  //     { newText: newPostText, id },
-  //     {
-  //       headers: {
-  //         accessToken: localStorage.getItem("accessToken"),
-  //       },
-  //     }
-  //   );
-
-  //   setPostObj({ ...postObj, postText: newPostText });
-  // }
+          setNewComment("");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   return (
     <View className="flex-1 bg-white">
@@ -176,9 +93,9 @@ function Post() {
         <View className="items-center">
           <PostTemplate post={postObj} />
         </View>
-        <View className="w-full items-center p-4">
+        <View className="w-full items-center">
           <View className="w-full items-center">
-            {comments.map((comment, key) => {
+            {comments.map((comment: Comment, key) => {
               return (
                 <View
                   className="w-full border border-gray-200 rounded-lg my-2"
@@ -216,12 +133,12 @@ function Post() {
           <TextInput
             placeholder="What's your opinion?"
             value={newComment}
-            // onChange={(e) => setNewComment(e.target.value)}
+            onChangeText={(text) => setNewComment(text)}
             maxLength={maxCharLimit}
             className="p-2 flex-grow border border-gray-200 bg-white rounded-lg"
           />
           <TouchableOpacity
-            // onPress={addComment}
+            onPress={addComment}
             className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl">
             <Text className="text-white">Reply</Text>
           </TouchableOpacity>

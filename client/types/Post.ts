@@ -3,6 +3,6 @@ export interface Post {
   username: string;
   title: string;
   content: string;
-  comments: number;
-  likes: number;
+  Comments: any[];
+  Likes: any[];
 }

@@ -7,7 +7,7 @@ import PostTemplate from "../../components/PostTemplate";
 import { Link, router } from "expo-router";
 import Divider from "@/components/ui/Divider";
 import LoginReminder from "@/components/ui/LoginReminder";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 import { useAuth } from "./../helpers/AuthContext";
 import { usePosts } from "../helpers/PostContext";
@@ -19,6 +19,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import BottomSheetComponent from "@/components/ui/BottomSheetComponent";
 
 export default function HomeScreen() {
   const { postState, setPostState } = usePosts();
@@ -110,16 +111,13 @@ export default function HomeScreen() {
       </ScrollView>
 
       {isOpen && (
-        <BottomSheet
+        <BottomSheetComponent
           ref={sheetRef}
           snapPoints={snapPoints}
-          containerStyle={{ zIndex: 999 }}
-          enablePanDownToClose={true}
-          onClose={() => setIsOpen(false)}>
-          <BottomSheetView>
-            <LoginReminder />
-          </BottomSheetView>
-        </BottomSheet>
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}>
+          <LoginReminder />
+        </BottomSheetComponent>
       )}
     </View>
   );

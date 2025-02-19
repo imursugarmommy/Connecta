@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { AuthContext } from "@/app/helpers/AuthContext";
@@ -19,6 +19,14 @@ import { Post as PostType } from "@/types/Post";
 
 import { usePosts } from "../helpers/PostContext";
 import { useAuth } from "../helpers/AuthContext";
+import BottomSheet from "@gorhom/bottom-sheet";
+import LoginReminder from "@/components/ui/LoginReminder";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import BottomSheetComponent from "@/components/ui/BottomSheetComponent";
 
 interface Comment {
   id: number;
@@ -36,6 +44,36 @@ function Post() {
   const [newComment, setNewComment] = useState("");
 
   const { authState } = useAuth();
+
+  const inputRef = useRef<TextInput>(null);
+  const sheetRef = useRef<BottomSheet>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const snapPoints = ["40%"];
+
+  const handleSnapPress = useCallback((index: number) => {
+    sheetRef.current?.snapToIndex(index);
+    setIsOpen(true);
+  }, []);
+
+  useEffect(() => {
+    axios.get(`http://${serverip}:6969/posts`).then((res) => {
+      setPostState(res.data);
+    });
+  }, []);
+
+  const opacity = useSharedValue(1);
+
+  useEffect(() => {
+    opacity.value = withTiming(isOpen ? 1 : 0, { duration: 300 });
+  }, [isOpen]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: isOpen ? "rgba(0,0,0,0.2)" : "transparent",
+      opacity: opacity.value,
+    };
+  });
 
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -91,8 +129,11 @@ function Post() {
         }
       )
       .then((res) => {
-        if (res.data.error) console.error(res.data.error);
-        else {
+        if (res.data.error) {
+          inputRef.current?.blur();
+          handleSnapPress(0);
+          return;
+        } else {
           const commentToAdd = {
             commentBody: newComment,
             username: res.data.username,
@@ -154,14 +195,19 @@ function Post() {
       });
   };
 
-  // TODO: add loading spinner and styling
-  if (!postObj) return <Text>Loading...</Text>;
-
   return (
     <View className="flex-1 bg-white">
+      <Animated.View
+        className="absolute top-0 left-0 w-full h-full z-10"
+        style={animatedStyle}
+      />
+
       <ScrollView className="flex-1 p-4">
         <View className="items-center">
-          <PostTemplate post={postObj} />
+          <PostTemplate
+            post={postObj}
+            handleSnapPress={handleSnapPress}
+          />
         </View>
         <View className="w-full items-center">
           <View className="w-full items-center">
@@ -206,6 +252,7 @@ function Post() {
         className="w-full bg-black absolute bottom-0">
         <View className="flex-row flex-grow items-center justify-between px-4 py-2 pb-10 gap-x-4 bg-gray-500">
           <TextInput
+            ref={inputRef}
             placeholder="What's your opinion?"
             value={newComment}
             onChangeText={(text) => setNewComment(text)}
@@ -219,6 +266,16 @@ function Post() {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+
+      {isOpen && (
+        <BottomSheetComponent
+          ref={sheetRef}
+          snapPoints={snapPoints}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}>
+          <LoginReminder />
+        </BottomSheetComponent>
+      )}
     </View>
   );
 }

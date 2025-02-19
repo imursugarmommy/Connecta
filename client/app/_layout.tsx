@@ -9,6 +9,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { useColorScheme } from "@/components/useColorScheme";
 
@@ -59,20 +60,22 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <AuthProvider>
         <PostProvider>
-          <Stack>
-            <Stack.Screen
-              name="(tabs)"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="modals/modal"
-              options={{ presentation: "modal" }}
-            />
-            <Stack.Screen
-              name="post/[id]"
-              options={{ title: "Post Overview", headerBackTitle: "Back" }}
-            />
-          </Stack>
+          <GestureHandlerRootView>
+            <Stack>
+              <Stack.Screen
+                name="(tabs)"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="modals/modal"
+                options={{ presentation: "modal" }}
+              />
+              <Stack.Screen
+                name="post/[id]"
+                options={{ title: "Post Overview", headerBackTitle: "Back" }}
+              />
+            </Stack>
+          </GestureHandlerRootView>
         </PostProvider>
       </AuthProvider>
     </ThemeProvider>

@@ -12,7 +12,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 // TODO: handle validation errors
-const PostTemplate = ({ post }: { post: Post }) => {
+const PostTemplate = ({
+  post,
+  handleSnapPress,
+}: {
+  post: Post;
+  handleSnapPress?: any;
+}) => {
   const { authState } = useAuth();
   const { postState, setPostState, removeItem } = usePosts();
 
@@ -26,6 +32,8 @@ const PostTemplate = ({ post }: { post: Post }) => {
         { headers: { accessToken: await AsyncStorage.getItem("accessToken") } }
       )
       .then((res) => {
+        if (res.data.error) return handleSnapPress(0);
+
         setPostState(
           postState.map((post: Post) => {
             if (post.id !== id) return post;

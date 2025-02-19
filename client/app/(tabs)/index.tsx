@@ -1,16 +1,24 @@
 import { ScrollView, TouchableOpacity } from "react-native";
 
 import { Text, View } from "@/components/Themed";
-import { useEffect } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 
 import PostTemplate from "../../components/PostTemplate";
 import { Link, router } from "expo-router";
 import Divider from "@/components/ui/Divider";
+import LoginReminder from "@/components/ui/LoginReminder";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
 import { useAuth } from "./../helpers/AuthContext";
 import { usePosts } from "../helpers/PostContext";
 import axios from "axios";
 import { Post } from "../../types/Post";
+
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 export default function HomeScreen() {
   const { postState, setPostState } = usePosts();
@@ -18,14 +26,42 @@ export default function HomeScreen() {
   const { logout, authState } = useAuth();
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
+  const sheetRef = useRef<BottomSheet>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const snapPoints = ["40%"];
+
+  const handleSnapPress = useCallback((index: number) => {
+    sheetRef.current?.snapToIndex(index);
+    setIsOpen(true);
+  }, []);
+
   useEffect(() => {
     axios.get(`http://${serverip}:6969/posts`).then((res) => {
       setPostState(res.data);
     });
   }, []);
 
+  const opacity = useSharedValue(1);
+
+  useEffect(() => {
+    opacity.value = withTiming(isOpen ? 1 : 0, { duration: 300 });
+  }, [isOpen]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: isOpen ? "rgba(0,0,0,0.2)" : "transparent",
+      opacity: opacity.value,
+    };
+  });
+
   return (
-    <View className="flex-1 items-center">
+    <View className="flex-1 items-center relative">
+      <Animated.View
+        className="absolute top-0 left-0 w-full h-full z-10"
+        style={animatedStyle}
+      />
+
       <View
         className="h-3"
         lightColor="#eee"
@@ -65,10 +101,26 @@ export default function HomeScreen() {
           <TouchableOpacity
             onPress={() => router.push(`/post/${post.id}` as any)}
             key={post.id || index}>
-            <PostTemplate post={post} />
+            <PostTemplate
+              post={post}
+              handleSnapPress={handleSnapPress}
+            />
           </TouchableOpacity>
         ))}
       </ScrollView>
+
+      {isOpen && (
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={snapPoints}
+          containerStyle={{ zIndex: 999 }}
+          enablePanDownToClose={true}
+          onClose={() => setIsOpen(false)}>
+          <BottomSheetView>
+            <LoginReminder />
+          </BottomSheetView>
+        </BottomSheet>
+      )}
     </View>
   );
 }

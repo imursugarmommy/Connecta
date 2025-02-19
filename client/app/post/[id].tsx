@@ -162,8 +162,6 @@ function Post() {
   };
 
   const deleteComment = async (id: number) => {
-    console.log("deleting comment with id: ", id);
-
     axios
       .delete(`http://${serverip}:6969/comments/${id}`, {
         headers: {
@@ -171,8 +169,6 @@ function Post() {
         },
       })
       .then(() => {
-        console.log("comment deleting ...");
-
         // remove comment from local state
         setPostState((prev: any[]) => {
           return prev.map((post) => {
@@ -190,8 +186,6 @@ function Post() {
             return val.id !== id;
           })
         );
-
-        console.log("comment deleted");
       });
   };
 
@@ -225,17 +219,14 @@ function Post() {
                         <Text>{comment.commentBody}</Text>
                       </View>
                     </View>
-                    {/* TODO: fix wierd bug where the comment get deleted only after 3 times pressing */}
                     {authState.username === comment.username && (
                       <TouchableOpacity
                         onPress={() => deleteComment(comment.id)}
                         className="p-2 bg-gray-200">
-                        <TouchableOpacity>
-                          <Trash2
-                            color="black"
-                            size={16}
-                          />
-                        </TouchableOpacity>
+                        <Trash2
+                          color="black"
+                          size={16}
+                        />
                       </TouchableOpacity>
                     )}
                   </View>

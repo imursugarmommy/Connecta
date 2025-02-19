@@ -11,7 +11,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
-// TODO: handle validation errors
 const PostTemplate = ({
   post,
   handleSnapPress,

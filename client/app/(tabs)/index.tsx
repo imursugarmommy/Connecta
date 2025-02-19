@@ -13,7 +13,7 @@ import axios from "axios";
 import { Post } from "../../types/Post";
 
 export default function HomeScreen() {
-  const { postState, setPostState, removeItem } = usePosts();
+  const { postState, setPostState } = usePosts();
 
   const { logout, authState } = useAuth();
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
@@ -65,12 +65,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             onPress={() => router.push(`/post/${post.id}` as any)}
             key={post.id || index}>
-            <PostTemplate
-              post={post}
-              postState={postState}
-              setPostState={setPostState}
-              removeItem={removeItem}
-            />
+            <PostTemplate post={post} />
           </TouchableOpacity>
         ))}
       </ScrollView>

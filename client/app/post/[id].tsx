@@ -27,7 +27,7 @@ interface Comment {
 }
 
 function Post() {
-  const { postState, setPostState, removeItem } = usePosts();
+  const { postState, setPostState } = usePosts();
 
   let { id } = useLocalSearchParams();
 
@@ -101,6 +101,15 @@ function Post() {
             id: res.data.id,
           };
 
+          setPostState((prev: any[]) => {
+            return prev.map((post) => {
+              if (post.id === postObj.id) {
+                post.Comments = [commentToAdd, ...post.Comments];
+              }
+              return post;
+            });
+          });
+
           setComments([commentToAdd, ...comments]);
 
           setNewComment("");
@@ -112,6 +121,8 @@ function Post() {
   };
 
   const deleteComment = async (id: number) => {
+    console.log("deleting comment with id: ", id);
+
     axios
       .delete(`http://${serverip}:6969/comments/${id}`, {
         headers: {
@@ -119,6 +130,8 @@ function Post() {
         },
       })
       .then(() => {
+        console.log("comment deleting ...");
+
         // remove comment from local state
         setPostState((prev: any[]) => {
           return prev.map((post) => {
@@ -136,6 +149,8 @@ function Post() {
             return val.id !== id;
           })
         );
+
+        console.log("comment deleted");
       });
   };
 
@@ -146,12 +161,7 @@ function Post() {
     <View className="flex-1 bg-white">
       <ScrollView className="flex-1 p-4">
         <View className="items-center">
-          <PostTemplate
-            post={postObj}
-            postState={postState}
-            setPostState={setPostState}
-            removeItem={removeItem}
-          />
+          <PostTemplate post={postObj} />
         </View>
         <View className="w-full items-center">
           <View className="w-full items-center">
@@ -173,7 +183,7 @@ function Post() {
                     {authState.username === comment.username && (
                       <TouchableOpacity
                         onPress={() => deleteComment(comment.id)}
-                        className="p-2">
+                        className="p-2 bg-gray-200">
                         <TouchableOpacity>
                           <Trash2
                             color="black"

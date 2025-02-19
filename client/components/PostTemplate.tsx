@@ -12,18 +12,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 // TODO: handle validation errors
-const PostTemplate = ({
-  post,
-  postState,
-  setPostState,
-  removeItem,
-}: {
-  post: Post;
-  postState: Post[];
-  setPostState: React.Dispatch<React.SetStateAction<Post[]>>;
-  removeItem: (id: number) => void;
-}) => {
+const PostTemplate = ({ post }: { post: Post }) => {
   const { authState } = useAuth();
+  const { postState, setPostState, removeItem } = usePosts();
 
   const addLike = async (id: number) => {
     axios

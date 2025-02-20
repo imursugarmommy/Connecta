@@ -1,19 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const { Posts } = require("../models");
+const { Posts, Likes } = require("../models");
 const { Op } = require("sequelize");
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   const searchparam = req.query.searchparam;
   try {
     let posts;
     if (searchparam) {
       posts = await Posts.findAll({
         where: {
-          content: {
-            [Op.like]: `%${searchparam}%`
-          }
-        }
+          [Op.or]: [
+            {
+              content: {
+                [Op.like]: `%${searchparam}%`,
+              },
+            },
+            {
+              title: {
+                [Op.like]: `%${searchparam}%`,
+              },
+            },
+          ],
+        },
       });
     } else {
       posts = await Posts.findAll();

@@ -12,21 +12,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    likes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    comments: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    dislikes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
   });
 
   Posts.associate = (models) => {
@@ -35,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Posts.hasMany(models.Likes, {
-      onDelete: "cascade",
-    });
-
-    Posts.hasMany(models.Dislikes, {
       onDelete: "cascade",
     });
   };

@@ -94,7 +94,7 @@ const PostTemplate = ({
             className="flex-row items-center gap-x-1">
             <ThumbsUp
               fill={
-                post.Likes.some((like) => like.UserId === authState.id)
+                post.Likes?.some((like) => like.UserId === authState.id)
                   ? "white"
                   : "transparent"
               }

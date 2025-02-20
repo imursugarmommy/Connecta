@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { Posts, Likes } = require("../models");
+const { Posts, Likes, Comments } = require("../models");
 const { Op } = require("sequelize");
+const { validateToken } = require("../middleware/AuthMiddleware");
 
 router.get("/", async (req, res) => {
   const searchparam = req.query.searchparam;
@@ -23,9 +24,16 @@ router.get("/", async (req, res) => {
             },
           ],
         },
+        include: [Likes, Comments],
+        limit: 50,
+        order: [["updatedAt", "DESC"]],
       });
     } else {
-      posts = await Posts.findAll();
+      posts = await Posts.findAll({
+        include: [Likes, Comments],
+        limit: 50,
+        order: [["updatedAt", "DESC"]],
+      });
     }
     res.json(posts);
   } catch (error) {
@@ -33,11 +41,35 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.get("/byid/:id", async (req, res) => {
+  const id = req.params.id;
+  const post = await Posts.findAll({
+    where: { id: id },
+    include: [Likes, Comments],
+  });
+
+  res.json(post);
+});
+
+router.post("/", validateToken, async (req, res) => {
   const post = req.body;
+  const user = req.user;
+
+  post.username = user.username;
+  post.UserId = user.id;
+
   await Posts.create(post);
 
   res.json(post);
+});
+
+router.delete("/:postId", validateToken, async (req, res) => {
+  // req.params graps number entered in url
+  const postId = req.params.postId;
+
+  await Posts.destroy({ where: { id: postId } });
+
+  res.json("Post Deleted");
 });
 
 module.exports = router;

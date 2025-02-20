@@ -10,6 +10,8 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import CheckAuth from "../helpers/CheckAuth";
 
+import { Home, Search, Plus, Send, UserRound } from "lucide-react-native";
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
@@ -26,26 +28,14 @@ export default function TabLayout() {
           name="index"
           options={{
             title: "Home",
-            tabBarIcon: () => (
-              <FontAwesome6
-                name="house"
-                size={24}
-                color="white"
-              />
-            ),
+            tabBarIcon: ({ color }) => <Home color={color} />,
           }}
         />
         <Tabs.Screen
           name="search"
           options={{
             title: "Suche",
-            tabBarIcon: () => (
-              <Octicons
-                name="search"
-                size={24}
-                color="white"
-              />
-            ),
+            tabBarIcon: ({ color }) => <Search color={color} />,
           }}
         />
         <Tabs.Screen
@@ -58,39 +48,29 @@ export default function TabLayout() {
           }}
           options={{
             title: "Add",
-            tabBarIcon: () => (
-              <FontAwesome6
-                name="house"
-                size={24}
-                color="white"
-              />
-            ),
+            tabBarLabelStyle: { display: "none" },
+            tabBarIconStyle: {
+              backgroundColor: "#FFD343",
+              height: 50,
+              width: 50,
+              borderRadius: "50%",
+              transform: [{ translateY: -10 }],
+            },
+            tabBarIcon: () => <Plus color={"white"} />,
           }}
         />
         <Tabs.Screen
           name="messages"
           options={{
             title: "Messages",
-            tabBarIcon: () => (
-              <FontAwesome
-                name="user"
-                size={24}
-                color="white"
-              />
-            ),
+            tabBarIcon: ({ color }) => <Send color={color} />,
           }}
         />
         <Tabs.Screen
           name="profile"
           options={{
             title: "Profile",
-            tabBarIcon: () => (
-              <FontAwesome
-                name="user"
-                size={24}
-                color="white"
-              />
-            ),
+            tabBarIcon: ({ color }) => <UserRound color={color} />,
           }}
         />
       </Tabs>

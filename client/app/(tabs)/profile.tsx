@@ -5,15 +5,18 @@ import { useAuth } from "../helpers/AuthContext";
 import { router } from "expo-router";
 
 import { Pencil, Share, UserRound } from "lucide-react-native";
-import Divider from "../../components/ui/Divider";
 import axios from "axios";
 import PostTemplate from "@/components/PostTemplate";
 import { Post } from "@/types/Post";
 import { ScrollView } from "react-native-gesture-handler";
+import TabSwitcher from "./../../components/ui/TabSwitcher";
 
 function ProfilePage() {
   const { authState } = useAuth();
-  const [userPosts, setUserPosts] = useState([]);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [userLikes, setUserLikes] = useState<Post[]>([]);
+
+  const [activeTab, setActiveTab] = useState("Posts");
 
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -30,6 +33,24 @@ function ProfilePage() {
       .get(`http://${serverip}:6969/posts/byuserid/${authState.id}`)
       .then((res) => {
         setUserPosts(res.data);
+      });
+
+    // * get post id from likes and get posts from postid
+    axios
+      .get(`http://${serverip}:6969/likes/byuserid/${authState.id}`)
+      .then(async (res) => {
+        const likes = res.data;
+        const posts = await Promise.all(
+          likes.map(async (like: any) => {
+            const postRes = await axios.get(
+              `http://${serverip}:6969/posts/byid/${like.PostId}`
+            );
+            const post = postRes.data[0];
+            post.Likes = [like];
+            return post;
+          })
+        );
+        setUserLikes(posts);
       });
   }, []);
 
@@ -71,7 +92,9 @@ function ProfilePage() {
         </View>
 
         <View className="w-full flex-row justify-between gap-x-2">
-          <TouchableOpacity className="flex-row flex-grow justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1">
+          <TouchableOpacity
+            className="flex-row flex-grow justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
+            onPress={editProfile}>
             <Text className="text-lg text-black dark:text-white mr-2">
               Edit Profile
             </Text>
@@ -81,7 +104,9 @@ function ProfilePage() {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row flex-grow justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1">
+          <TouchableOpacity
+            className="flex-row flex-grow justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
+            onPress={shareProfile}>
             <Text className="text-lg text-black dark:text-white mr-2">
               Share Profile
             </Text>
@@ -94,26 +119,45 @@ function ProfilePage() {
       </View>
 
       <View className="my-4">
-        <Divider
-          orientation="horizontal"
-          text="Your Posts"
+        <TabSwitcher
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
         />
       </View>
 
-      <View className="w-full">
-        {userPosts.map((post: Post) => {
-          return (
-            <View
-              key={post.id}
-              className="mb-4">
-              <PostTemplate
-                post={post}
-                handleSnapPress={() => {}}
-              />
-            </View>
-          );
-        })}
-      </View>
+      {activeTab === "Posts" && (
+        <View className="w-full">
+          {userPosts.map((post: Post) => {
+            return (
+              <View
+                key={post.id}
+                className="mb-4">
+                <PostTemplate
+                  post={post}
+                  handleSnapPress={() => {}}
+                />
+              </View>
+            );
+          })}
+        </View>
+      )}
+
+      {activeTab === "Likes" && (
+        <View className="w-full">
+          {userLikes.map((post: Post) => {
+            return (
+              <View
+                key={post.id}
+                className="mb-4">
+                <PostTemplate
+                  post={post}
+                  handleSnapPress={() => {}}
+                />
+              </View>
+            );
+          })}
+        </View>
+      )}
     </ScrollView>
   );
 }

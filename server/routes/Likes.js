@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Likes } = require("../models");
+const { Likes, Posts } = require("../models");
 const { validateToken } = require("../middleware/AuthMiddleware");
 
 router.post("/", validateToken, async (req, res) => {
@@ -22,6 +22,18 @@ router.post("/", validateToken, async (req, res) => {
     await Likes.destroy({ where: { PostId: PostId, UserId: UserId } });
     res.json({ liked: false });
   }
+});
+
+// get all likes from a user return its posts
+router.get("/byuserid/:id", async (req, res) => {
+  const id = req.params.id;
+  const postList = await Likes.findAll({
+    where: { UserId: id },
+    include: [Posts],
+    order: [["updatedAt", "DESC"]],
+  });
+
+  res.json(postList);
 });
 
 module.exports = router;

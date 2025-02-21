@@ -23,6 +23,17 @@ router.get("/byid/:id", async (req, res) => {
   res.json(post);
 });
 
+router.get("/byuserid/:id", async (req, res) => {
+  const id = req.params.id;
+  const postList = await Posts.findAll({
+    where: { UserId: id },
+    include: [Likes],
+    order: [["updatedAt", "DESC"]],
+  });
+
+  res.json(postList);
+});
+
 router.post("/", validateToken, async (req, res) => {
   const post = req.body;
   const user = req.user;

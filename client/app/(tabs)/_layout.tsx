@@ -11,6 +11,7 @@ import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import CheckAuth from "../helpers/CheckAuth";
 
 import { Home, Search, Plus, Send, UserRound } from "lucide-react-native";
+import Headers from "@/components/ui/Headers";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,6 +32,12 @@ export default function TabLayout() {
           options={{
             title: "Home",
             tabBarIcon: ({ color }) => <Home color={color} />,
+            header: () => (
+              <Headers
+                title="Home"
+                style={{ paddingTop: 50 }}
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -38,6 +45,12 @@ export default function TabLayout() {
           options={{
             title: "Suche",
             tabBarIcon: ({ color }) => <Search color={color} />,
+            header: () => (
+              <Headers
+                title="Search"
+                style={{ paddingTop: 50 }}
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -59,6 +72,12 @@ export default function TabLayout() {
               transform: [{ translateY: -10 }],
             },
             tabBarIcon: () => <Plus color={"white"} />,
+            header: () => (
+              <Headers
+                title="Add"
+                style={{ paddingTop: 50 }}
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -66,6 +85,12 @@ export default function TabLayout() {
           options={{
             title: "Messages",
             tabBarIcon: ({ color }) => <Send color={color} />,
+            header: () => (
+              <Headers
+                title="Messages"
+                style={{ paddingTop: 50 }}
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -73,6 +98,14 @@ export default function TabLayout() {
           options={{
             title: "Profile",
             tabBarIcon: ({ color }) => <UserRound color={color} />,
+            header: () => (
+              <Headers
+                title="Profile"
+                style={{ paddingTop: 50 }}
+                icon={true}
+              />
+            ),
+            headerTitleContainerStyle: { backgroundColor: "transparent" },
           }}
         />
       </Tabs>

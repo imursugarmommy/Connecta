@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -8,25 +9,37 @@ import {
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import axios from "axios";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import PostTemplate from "@/components/PostTemplate";
-import { Octicons } from "@expo/vector-icons";
+import { Post } from "@/types/Post";
+import { Search } from "lucide-react-native";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
-
-type Post = {
-  id: number;
-  title: string;
-  content: string;
-  username: string;
-  comments: number;
-  likes: number;
-};
 
 export default function SearchScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [search, setSearch] = useState<string>("");
   const colorScheme = useColorScheme();
+
+  // * nice idea but when parent header is changed every tabs header changes
+  // ? maybe there is a good solution, havent found yet
+  // const navigation = useNavigation();
+
+  // useLayoutEffect(() => {
+  //   navigation.getParent()?.setOptions({
+  //     headerShown: true,
+  //     headerLargeTitle: true,
+  //     headerTitle: "Suche",
+  //     headerSearchBarOptions: {
+  //       placeholder: "Search",
+  //       autoCapitalize: "none",
+  //       onChangeText: (event: any) => {
+  //         const searchText = event.nativeEvent.text;
+  //         updateSearch(searchText);
+  //       },
+  //     },
+  //   });
+  // }, [navigation]);
 
   useEffect(() => {
     axios
@@ -53,17 +66,17 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
-      <View className="m-4 p-4 w-full dark:text-white rouned-xl">
-        <View className="flex-row items-center bg-gray-200 dark:bg-gray-800 rounded-xl px-3 h-7">
-          <Octicons
-            name="search"
-            size={14}
+      <View className="m-2 p-4 w-full dark:text-white rouned-xl">
+        <View className="flex-row items-center bg-gray-200 dark:bg-gray-800 rounded-xl px-3 h-10">
+          <Search
+            strokeWidth={1.6}
+            size={20}
             color={colorScheme === "dark" ? "white" : "gray"}
             style={{ marginRight: 10 }}
           />
 
           <TextInput
-            className="dark:text-white h-full p-0 w-full"
+            className="dark:text-white h-full p-0 w-full text-base"
             placeholder="Nach was suchst du diesmal?"
             placeholderTextColor={colorScheme === "dark" ? "white" : "gray"}
             onChangeText={updateSearch}

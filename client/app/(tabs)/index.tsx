@@ -63,17 +63,6 @@ export default function HomeScreen() {
         style={animatedStyle}
       />
 
-      <View
-        className="h-3"
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      <View className="w-full p-4 items-center">
-        <Text className="text-2xl font-bold">Neue Posts für dich</Text>
-      </View>
-
-      <Divider orientation="horizontal" />
-
       {authState.state ? (
         <Text>{JSON.stringify(authState, null, 2)}</Text>
       ) : (
@@ -99,14 +88,19 @@ export default function HomeScreen() {
 
       <ScrollView className="w-full h-full p-4">
         {postState.map((post: Post, index: number) => (
-          <TouchableOpacity
-            onPress={() => router.push(`/post/${post.id}` as any)}
-            key={post.id || index}>
-            <PostTemplate
-              post={post}
-              handleSnapPress={handleSnapPress}
-            />
-          </TouchableOpacity>
+          <View
+            key={post.id || index}
+            className="mb-4">
+            <TouchableOpacity
+              onPress={() => router.push(`/post/${post.id}` as any)}>
+              <PostTemplate
+                post={post}
+                handleSnapPress={handleSnapPress}
+              />
+            </TouchableOpacity>
+
+            <Divider orientation="horizontal" />
+          </View>
         ))}
       </ScrollView>
 

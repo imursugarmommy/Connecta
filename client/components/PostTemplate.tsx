@@ -63,7 +63,7 @@ const PostTemplate = ({
       <View className="w-full bg-gray-500 p-3 flex-row justify-between items-center">
         <Text className="text-2xl text-white">{post.title}</Text>
 
-        {authState.username === post.username && (
+        {authState.id === post.UserId && (
           <TouchableOpacity onPress={() => removeItem(post.id)}>
             <Trash2
               size={18}

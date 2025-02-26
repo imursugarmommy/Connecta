@@ -31,14 +31,18 @@ export default function CheckAuth({ children }: { children: React.ReactNode }) {
           if (res.data.error) {
             setAuthState({
               id: "",
+              profileImage: "",
               state: false,
+              name: "",
               username: "",
               email: "",
             });
           } else {
             setAuthState({
               id: res.data.id,
+              profileImage: res.data.profileImage,
               state: true,
+              name: res.data.name,
               username: res.data.username,
               email: res.data.email,
             });

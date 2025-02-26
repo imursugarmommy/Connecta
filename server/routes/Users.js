@@ -12,7 +12,7 @@ const { where, Op } = require("sequelize");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "images");
+    cb(null, "images/users");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -60,7 +60,13 @@ router.post("/login", async (req, res) => {
     if (!match) return res.json({ error: "Wrong username or password" });
 
     const accessToken = sign(
-      { id: user.id, email: user.email, username: user.username },
+      {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        profileImage: user.profileImage,
+        name: user.name,
+      },
       process.env.JWT_SECRET
     );
 
@@ -87,8 +93,21 @@ router.get("/:input", async (req, res) => {
   res.json(users);
 });
 
-router.post("/picture", upload.single("profileImage"), (req, res) => {
-  res.json(req.file);
-});
+router.post(
+  "/picture",
+  validateToken,
+  upload.single("profileImage"),
+  async (req, res) => {
+    const userId = req.user.id;
+    const profileImage = req.file.filename;
+
+    try {
+      await Users.update({ profileImage }, { where: { id: userId } });
+      res.json({ message: "Profile image updated", profileImage });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update profile image" });
+    }
+  }
+);
 
 module.exports = router;

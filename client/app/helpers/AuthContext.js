@@ -6,7 +6,9 @@ export const AuthContext = createContext();
 
 const initialAuthState = {
   id: "",
+  profileImage: "",
   email: "",
+  name: "",
   username: "",
   state: "",
 };

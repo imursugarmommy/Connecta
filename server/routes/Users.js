@@ -4,10 +4,23 @@ const bcrypt = require("bcryptjs");
 const { Users } = require("../models");
 require("dotenv").config();
 
+const multer = require("multer");
 const { sign } = require("jsonwebtoken");
 
 const { validateToken } = require("../middleware/AuthMiddleware");
 const { where, Op } = require("sequelize");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "images");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
 
 // get all users
 router.get("/", async (req, res) => {
@@ -72,6 +85,10 @@ router.get("/:input", async (req, res) => {
     return res.json({ error: "No matching users found" });
 
   res.json(users);
+});
+
+router.post("/picture", upload.single("profileImage"), (req, res) => {
+  res.json(req.file);
 });
 
 module.exports = router;

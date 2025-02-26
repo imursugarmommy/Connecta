@@ -3,3 +3,7 @@ node_modules/
 
 #Env Files
 .env
+
+# Ignore everything inside images/users but not the folder itself
+images/users/*
+!images/users/.gitkeep

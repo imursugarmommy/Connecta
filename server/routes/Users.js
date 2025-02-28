@@ -4,10 +4,26 @@ const bcrypt = require("bcryptjs");
 const { Users } = require("../models");
 require("dotenv").config();
 
+const multer = require("multer");
 const { sign } = require("jsonwebtoken");
 
 const { validateToken } = require("../middleware/AuthMiddleware");
 const { where, Op } = require("sequelize");
+
+const fs = require("fs");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "images/users");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
 
 // get all users
 router.get("/", async (req, res) => {
@@ -47,7 +63,13 @@ router.post("/login", async (req, res) => {
     if (!match) return res.json({ error: "Wrong username or password" });
 
     const accessToken = sign(
-      { id: user.id, email: user.email, username: user.username },
+      {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        profileImage: user.profileImage,
+        name: user.name,
+      },
       process.env.JWT_SECRET
     );
 
@@ -73,5 +95,35 @@ router.get("/:input", async (req, res) => {
 
   res.json(users);
 });
+
+router.post(
+  "/picture",
+  validateToken,
+  upload.single("profileImage"),
+  async (req, res) => {
+    const userId = req.user.id;
+    const user = await Users.findOne({ where: { id: userId } });
+    const originalImage = user.profileImage;
+    const profileImage = req.file.filename;
+
+    try {
+      if (originalImage) {
+        const imagePath = path.join(
+          __dirname,
+          "../images/users",
+          originalImage
+        );
+        fs.unlink(imagePath, (err) => {
+          if (err) console.error("Failed to delete original image: ", err);
+        });
+      }
+
+      await Users.update({ profileImage }, { where: { id: userId } });
+      res.json({ message: "Profile image updated", profileImage });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update profile image" });
+    }
+  }
+);
 
 module.exports = router;

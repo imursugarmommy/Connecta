@@ -10,6 +10,9 @@ const { sign } = require("jsonwebtoken");
 const { validateToken } = require("../middleware/AuthMiddleware");
 const { where, Op } = require("sequelize");
 
+const fs = require("fs");
+const path = require("path");
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "images/users");
@@ -99,9 +102,22 @@ router.post(
   upload.single("profileImage"),
   async (req, res) => {
     const userId = req.user.id;
+    const user = await Users.findOne({ where: { id: userId } });
+    const originalImage = user.profileImage;
     const profileImage = req.file.filename;
 
     try {
+      if (originalImage) {
+        const imagePath = path.join(
+          __dirname,
+          "../images/users",
+          originalImage
+        );
+        fs.unlink(imagePath, (err) => {
+          if (err) console.error("Failed to delete original image: ", err);
+        });
+      }
+
       await Users.update({ profileImage }, { where: { id: userId } });
       res.json({ message: "Profile image updated", profileImage });
     } catch (error) {

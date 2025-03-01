@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { Posts, Likes, Comments } = require("../models");
+const { Posts, Likes, Comments, Users } = require("../models");
 const { validateToken } = require("../middleware/AuthMiddleware");
 
+const fs = require("fs");
+const path = require("path");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -57,8 +59,16 @@ router.post(
 );
 
 router.delete("/:postId", validateToken, async (req, res) => {
-  // req.params graps number entered in url
   const postId = req.params.postId;
+  const post = await Posts.findOne({ where: { id: postId } });
+  const originalimage = post.postImage;
+
+  if (originalimage) {
+    const imagePath = path.join(__dirname, "../images/posts", originalimage);
+    fs.unlink(imagePath, (err) => {
+      if (err) console.error("Failed to delete original image: ", err);
+    });
+  }
 
   await Posts.destroy({ where: { id: postId } });
 

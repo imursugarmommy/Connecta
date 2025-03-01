@@ -7,3 +7,7 @@ node_modules/
 # Ignore everything inside images/users but not the folder itself
 images/users/*
 !images/users/.gitkeep
+
+# Ignore everything inside images/posts but not the folder itself
+images/posts/*
+!images/posts/.gitkeep

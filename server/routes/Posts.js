@@ -46,11 +46,14 @@ router.post(
   async (req, res) => {
     const post = req.body;
     const user = req.user;
-    const postImage = req.file.filename;
+    let file = req.file;
+
+    if (file) file = req.file.filename;
+    else file = null;
 
     post.username = user.username;
     post.UserId = user.id;
-    post.postImage = postImage;
+    post.postImage = file;
 
     await Posts.create(post);
 

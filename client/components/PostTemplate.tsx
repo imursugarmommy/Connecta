@@ -74,7 +74,9 @@ const PostTemplate = ({
             source={require("../assets/images/icon.png")}
             className="w-8 h-8 rounded-full"
           />
-          <Text className="text-xl text-black">Levi</Text>
+          <Text className="text-xl text-black">
+            {post.name ? post.name : "User's name"}
+          </Text>
 
           <TouchableOpacity
             onPress={() => router.push(`/user/${post.username}` as any)}>
@@ -92,12 +94,16 @@ const PostTemplate = ({
         )}
       </View>
       <View className="w-full py-2">
-        <View className="flex gap-y-4">
+        <View className={"flex " + (post.postImage && "gap-y-2")}>
           <Text className="text-lg font-bold">{post.title}</Text>
-          <Image
-            source={require("../assets/images/icon.png")}
-            className="w-full h-52 object-cover bg-black"
-          />
+          {post.postImage && (
+            <Image
+              source={{
+                uri: `http://${serverip}:6969/images/posts/${post.postImage}`,
+              }}
+              className="w-full h-52 object-cover bg-black"
+            />
+          )}
           <Text className="text-lg">{post.content}</Text>
         </View>
       </View>

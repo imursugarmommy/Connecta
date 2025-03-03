@@ -74,9 +74,7 @@ const PostTemplate = ({
             source={require("../assets/images/icon.png")}
             className="w-8 h-8 rounded-full"
           />
-          <Text className="text-xl text-black">
-            {post.name ? post.name : "User's name"}
-          </Text>
+          <Text className="text-xl text-black">{post.name}</Text>
 
           <TouchableOpacity
             onPress={() => router.push(`/user/${post.username}` as any)}>

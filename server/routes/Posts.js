@@ -48,10 +48,13 @@ router.post(
     const user = req.user;
     let file = req.file;
 
+    console.log(req.user);
+
     if (file) file = req.file.filename;
     else file = null;
 
     post.username = user.username;
+    post.name = user.name;
     post.UserId = user.id;
     post.postImage = file;
 

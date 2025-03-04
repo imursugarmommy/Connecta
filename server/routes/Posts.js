@@ -53,6 +53,7 @@ router.post(
     if (file) file = req.file.filename;
     else file = null;
 
+    post.profileImage = user.profileImage;
     post.username = user.username;
     post.name = user.name;
     post.UserId = user.id;

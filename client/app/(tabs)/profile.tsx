@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 
 import { useAuth } from "../helpers/AuthContext";
 import { router } from "expo-router";
 
-import { Pencil, Share, UserRound } from "lucide-react-native";
+import { Camera, Pencil, Share } from "lucide-react-native";
 import axios from "axios";
 import PostTemplate from "@/components/PostTemplate";
 import { Post } from "@/types/Post";
 import { ScrollView } from "react-native-gesture-handler";
 import TabSwitcher from "./../../components/ui/TabSwitcher";
+import * as ImagePicker from "expo-image-picker";
 
 function ProfilePage() {
   const { authState } = useAuth();
@@ -22,7 +23,7 @@ function ProfilePage() {
 
   if (!authState.state) router.push("/auth/login");
 
-  function editProfilePicture() {}
+  async function editProfilePicture() {}
 
   function shareProfile() {}
 
@@ -58,16 +59,37 @@ function ProfilePage() {
     <ScrollView className="flex-1 p-4 px-6 bg-white dark:bg-black">
       <View className="flex gap-y-2 items-center">
         <View className="flex-row w-full mb-2">
-          <TouchableOpacity
-            onPress={editProfilePicture}
-            className="justify-center mr-4">
-            <View className="h-20 w-20 items-center justify-end bg-gray-200 rounded-full">
-              <UserRound
-                size={55}
-                color={"white"}
-              />
+          <View className="relative mr-4">
+            <View className="justify-center">
+              {authState.profileImage ? (
+                <Image
+                  source={{
+                    uri: `http://${serverip}:6969/images/users/${authState.profileImage}`,
+                  }}
+                  className="h-20 w-20 items-center justify-end bg-white rounded-full"
+                />
+              ) : (
+                <View
+                  className="w-20 h-20 rounded-full flex items-center justify-center"
+                  style={{
+                    backgroundColor: `hsl(${authState.id}, 40%, 40%)`,
+                  }}>
+                  <Text className="text-white text-4xl">
+                    {authState.name.split("")[0].toUpperCase()}
+                  </Text>
+                </View>
+              )}
             </View>
-          </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={editProfilePicture}
+              className="p-1 border-4 border-white bg-gray-200 dark:bg-[#414450] rounded-full absolute -bottom-1 -right-1">
+              <Camera
+                color={"black"}
+                size={16}
+              />
+            </TouchableOpacity>
+          </View>
 
           <View className="flex-grow flex-wrap">
             <Text className="text-black dark:text-white text-3xl font-bold">

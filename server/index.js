@@ -10,6 +10,7 @@ const db = require("./models");
 
 // static file serving
 app.use("/images/posts", express.static(path.join(__dirname, "images/posts")));
+app.use("/images/users", express.static(path.join(__dirname, "images/users")));
 
 //Routes
 const postRouter = require("./routes/Posts");

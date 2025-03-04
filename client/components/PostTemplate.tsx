@@ -66,14 +66,29 @@ const PostTemplate = ({
       });
   };
 
+  // TODO: prevent re-render of image on addLike
   return (
     <View className="w-full border-gray-50 mb-6 rounded-md overflow-hidden">
       <View className="w-full flex-row justify-between items-center">
         <View className="flex-row items-center gap-x-4">
-          <Image
-            source={require("../assets/images/icon.png")}
-            className="w-8 h-8 rounded-full"
-          />
+          {post.profileImage ? (
+            <Image
+              source={{
+                uri: `http://${serverip}:6969/images/users/${post.profileImage}`,
+              }}
+              className="w-8 h-8 rounded-full object-cover bg-gray-200"
+            />
+          ) : (
+            <View
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{
+                backgroundColor: `hsl(${authState.id}, 40%, 40%)`,
+              }}>
+              <Text className="text-white text-xl">
+                {authState.name.split("")[0].toUpperCase()}
+              </Text>
+            </View>
+          )}
           <Text className="text-xl text-black">{post.name}</Text>
 
           <TouchableOpacity

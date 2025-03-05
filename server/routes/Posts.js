@@ -59,9 +59,11 @@ router.post(
     post.UserId = user.id;
     post.postImage = file;
 
-    await Posts.create(post);
+    const createdPost = await Posts.create(post);
 
-    res.json(post);
+    const completePost = await Posts.findOne({ where: { id: createdPost.id } });
+
+    res.json(completePost);
   }
 );
 

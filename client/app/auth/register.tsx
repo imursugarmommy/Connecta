@@ -19,12 +19,14 @@ const login = () => {
 
   const initialValues = {
     email: "",
+    name: "",
     username: "",
     password: "",
   };
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().min(3).required("Name is required"),
+    email: Yup.string().min(3).required("Email is required"),
+    name: Yup.string().min(3).required("Name is required"),
     username: Yup.string().min(3).required("Username is required"),
     password: Yup.string().min(3).required("Password is required"),
   });
@@ -59,6 +61,7 @@ const login = () => {
         ...authState,
         email: data.email,
         username: data.username,
+        name: data.name,
         state: true,
       });
 

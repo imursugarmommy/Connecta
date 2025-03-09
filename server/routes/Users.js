@@ -34,12 +34,13 @@ router.get("/", async (req, res) => {
 
 // register new user
 router.post("/", async (req, res) => {
-  const { email, username, password } = req.body;
+  const { email, name, username, password } = req.body;
 
   bcrypt.hash(password, 10).then((hash) => {
     Users.create({
       email,
       username,
+      name,
       password: hash,
     });
   });

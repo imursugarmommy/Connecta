@@ -23,18 +23,13 @@ const PostContent = memo(({ post }: { post: Post }) => {
     });
   }, []);
 
-  if (!user)
-    return (
-      <View className="w-full h-56 flex items-center justify-center bg-gray-200 rounded-lg">
-        <Text>Something went wrong...</Text>
-      </View>
-    );
-
   return (
     <View>
       <View className="w-full flex-row justify-between items-center">
-        <View className="flex-row items-center gap-x-4">
-          {user.profileImage ? (
+        <TouchableOpacity
+          className="flex-row items-center gap-x-4"
+          onPress={() => router.push(`/user/${user?.username}` as any)}>
+          {user && user.profileImage ? (
             <Image
               source={{
                 uri: `http://${serverip}:6969/images/users/${user.profileImage}`,
@@ -45,19 +40,25 @@ const PostContent = memo(({ post }: { post: Post }) => {
             <View
               className="w-8 h-8 rounded-full flex items-center justify-center"
               style={{
-                backgroundColor: `hsl(${user.id}, 40%, 40%)`,
+                backgroundColor: `hsl(${user ? user.id : 0}, 40%, 40%)`,
               }}>
               <Text className="text-white text-xl">
-                {user.name.split("")[0].toUpperCase()}
+                {(user && user.name.split("")[0].toUpperCase()) || ""}
               </Text>
             </View>
           )}
-          <Text className="text-xl text-black">{user.name}</Text>
-          <TouchableOpacity
-            onPress={() => router.push(`/user/${user.username}` as any)}>
+          {user ? (
+            <Text className="text-xl text-black">{user.name}</Text>
+          ) : (
+            <View className="w-28 py-2.5 rounded-full bg-gray-200" />
+          )}
+          {user ? (
             <Text className="text-sm text-gray-500">@{user.username}</Text>
-          </TouchableOpacity>
-        </View>
+          ) : (
+            <View className="w-20 py-2 rounded-full bg-gray-200" />
+          )}
+        </TouchableOpacity>
+
         {authState.id === post.UserId && (
           <TouchableOpacity onPress={() => removeItem(post.id)}>
             <Trash2

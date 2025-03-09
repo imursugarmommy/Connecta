@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Post } from "../types/Post";
+import { User } from "../types/User";
 import { useAuth } from "@/app/helpers/AuthContext";
 import { usePosts } from "@/app/helpers/PostContext";
 
@@ -28,7 +29,7 @@ const PostTemplate = ({
 }) => {
   const { authState } = useAuth();
   const { postState, setPostState, removeItem } = usePosts();
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     const user = axios.get(`http://${serverip}:6969/users/byid/${post.UserId}`);
@@ -75,12 +76,19 @@ const PostTemplate = ({
       });
   };
 
+  if (!user)
+    return (
+      <View className="w-full h-56 flex items-center justify-center bg-gray-200 rounded-lg">
+        <Text>Something went wrong...</Text>
+      </View>
+    );
+
   // TODO: prevent re-render of image on addLike
   return (
     <View className="w-full border-gray-50 mb-6 rounded-md overflow-hidden">
       <View className="w-full flex-row justify-between items-center">
         <View className="flex-row items-center gap-x-4">
-          {post.profileImage ? (
+          {user.profileImage ? (
             <Image
               source={{
                 uri: `http://${serverip}:6969/images/users/${user.profileImage}`,

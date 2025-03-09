@@ -11,9 +11,10 @@ import { Post } from "@/types/Post";
 import { ScrollView } from "react-native-gesture-handler";
 import TabSwitcher from "./../../components/ui/TabSwitcher";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function ProfilePage() {
-  const { authState } = useAuth();
+  const { authState, setAuthState } = useAuth();
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [userLikes, setUserLikes] = useState<Post[]>([]);
 
@@ -23,7 +24,62 @@ function ProfilePage() {
 
   if (!authState.state) router.push("/auth/login");
 
-  async function editProfilePicture() {}
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const profileImage = await AsyncStorage.getItem("profileImage");
+      setProfileImage(profileImage);
+    })();
+  }, []);
+
+  async function editProfilePicture() {
+    // get image from gallery
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== "granted")
+      return alert("Sorry, we need camera roll permissions to make this work!");
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (result.canceled) return;
+
+    const image = result.assets[0].uri;
+    const formData = new FormData();
+
+    const fileName = image.split("/").pop();
+    const fileType = image.split(".").pop();
+    const file = {
+      uri: image,
+      name: fileName,
+      type: `image/${fileType}`,
+    };
+    formData.append("profileImage", file as any);
+
+    const response = await axios.post(
+      `http://${serverip}:6969/users/picture`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          accessToken: await AsyncStorage.getItem("accessToken"),
+        },
+      }
+    );
+
+    if (response.data.error)
+      return alert(
+        "We are having trouble uploading your image. Please try again later."
+      );
+
+    setProfileImage(response.data.profileImage);
+
+    await AsyncStorage.setItem("profileImage", response.data.profileImage);
+  }
 
   function shareProfile() {}
 
@@ -61,10 +117,10 @@ function ProfilePage() {
         <View className="flex-row w-full mb-2">
           <View className="relative mr-4">
             <View className="justify-center">
-              {authState.profileImage ? (
+              {profileImage ? (
                 <Image
                   source={{
-                    uri: `http://${serverip}:6969/images/users/${authState.profileImage}`,
+                    uri: `http://${serverip}:6969/images/users/${profileImage}`,
                   }}
                   className="h-20 w-20 items-center justify-end bg-white rounded-full"
                 />

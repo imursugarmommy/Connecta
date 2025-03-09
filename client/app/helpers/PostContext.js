@@ -21,6 +21,7 @@ export const PostProvider = ({ children }) => {
 
       const savedItem = response.data;
 
+      console.log("Saved item: ", savedItem);
       setPostState((prev) => [savedItem, ...prev]);
     } catch (error) {
       console.error("Error adding item:", error);

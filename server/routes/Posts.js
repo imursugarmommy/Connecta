@@ -53,15 +53,12 @@ router.post(
     if (file) file = req.file.filename;
     else file = null;
 
-    post.profileImage = user.profileImage;
-    post.username = user.username;
-    post.name = user.name;
     post.UserId = user.id;
     post.postImage = file;
 
-    await Posts.create(post);
+    const newPost = await Posts.create(post);
 
-    res.json(post);
+    res.json(newPost);
   }
 );
 

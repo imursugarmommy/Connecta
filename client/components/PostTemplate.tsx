@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Post } from "../types/Post";
 import { useAuth } from "@/app/helpers/AuthContext";
 import { usePosts } from "@/app/helpers/PostContext";
@@ -28,6 +28,15 @@ const PostTemplate = ({
 }) => {
   const { authState } = useAuth();
   const { postState, setPostState, removeItem } = usePosts();
+  const [user, setUser] = useState<any>();
+
+  useEffect(() => {
+    const user = axios.get(`http://${serverip}:6969/users/byid/${post.UserId}`);
+
+    user.then((res) => {
+      setUser(res.data);
+    });
+  }, []);
 
   const addLike = async (id: number) => {
     axios
@@ -74,7 +83,7 @@ const PostTemplate = ({
           {post.profileImage ? (
             <Image
               source={{
-                uri: `http://${serverip}:6969/images/users/${post.profileImage}`,
+                uri: `http://${serverip}:6969/images/users/${user.profileImage}`,
               }}
               className="w-8 h-8 rounded-full object-cover bg-gray-200"
             />
@@ -82,18 +91,18 @@ const PostTemplate = ({
             <View
               className="w-8 h-8 rounded-full flex items-center justify-center"
               style={{
-                backgroundColor: `hsl(${authState.id}, 40%, 40%)`,
+                backgroundColor: `hsl(${user.id}, 40%, 40%)`,
               }}>
               <Text className="text-white text-xl">
-                {authState.name.split("")[0].toUpperCase()}
+                {user.name.split("")[0].toUpperCase()}
               </Text>
             </View>
           )}
-          <Text className="text-xl text-black">{post.name}</Text>
+          <Text className="text-xl text-black">{user.name}</Text>
 
           <TouchableOpacity
-            onPress={() => router.push(`/user/${post.username}` as any)}>
-            <Text className="text-sm text-gray-500">@{post.username}</Text>
+            onPress={() => router.push(`/user/${user.username}` as any)}>
+            <Text className="text-sm text-gray-500">@{user.username}</Text>
           </TouchableOpacity>
         </View>
 

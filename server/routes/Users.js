@@ -48,6 +48,15 @@ router.post("/", async (req, res) => {
   res.json({ message: "User created" });
 });
 
+router.get("/byid/:id", async (req, res) => {
+  const { id } = req.params;
+  const user = await Users.findByPk(id);
+
+  if (!user) return res.json({ error: "User not found" });
+
+  res.json(user);
+});
+
 // log into account
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;

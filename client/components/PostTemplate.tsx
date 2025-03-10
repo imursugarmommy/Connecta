@@ -9,7 +9,7 @@ import axios from "axios";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import PostContent from "./ui/PostContent";
-import { User } from "@/types/User";
+import * as Sharing from "expo-sharing";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -73,14 +73,24 @@ const PostTemplate = ({
             <Heart
               fill={
                 post.Likes?.some((like) => like.UserId === authState.id)
-                  ? "black"
+                  ? "#FFD343"
                   : "transparent"
               }
               size={20}
-              color={"black"}
+              color={
+                post.Likes?.some((like) => like.UserId === authState.id)
+                  ? "#FFD343"
+                  : "#D9D9D9"
+              }
             />
 
-            <Text className="text-gray-700">
+            <Text
+              className="text-gray-300"
+              style={{
+                color: post.Likes?.some((like) => like.UserId === authState.id)
+                  ? "#FFD343"
+                  : "#D9D9D9",
+              }}>
               {post.Likes ? post.Likes.length : 0}
             </Text>
           </TouchableOpacity>
@@ -88,23 +98,22 @@ const PostTemplate = ({
           <View className="flex-row items-center gap-x-1">
             <MessageCircle
               size={20}
-              color={"black"}
+              color={"#D9D9D9"}
             />
-            <Text className="text-gray-700">
+            <Text className="text-gray-300">
               {post.Comments ? post.Comments.length : 0}
             </Text>
           </View>
         </View>
         <View className="flex-grow flex-row justify-end bg-transparent gap-x-3">
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={async () =>
+              await Sharing.shareAsync(
+                `http://${serverip}:6969/posts/` + post.id
+              )
+            }>
             <Share
-              color={"black"}
-              size={20}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Bookmark
-              color={"black"}
+              color={"#D9D9D9"}
               size={20}
             />
           </TouchableOpacity>

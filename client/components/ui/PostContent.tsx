@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import React, { useEffect, useState, memo } from "react";
 import { User } from "@/types/User";
 import axios from "axios";
@@ -60,10 +60,28 @@ const PostContent = memo(({ post }: { post: Post }) => {
         </TouchableOpacity>
 
         {authState.id === post.UserId && (
-          <TouchableOpacity onPress={() => removeItem(post.id)}>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                "Delete Post",
+                "Are you sure you want to delete this post?",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => {},
+                    style: "cancel",
+                  },
+                  {
+                    text: "Delete",
+                    onPress: () => removeItem(post.id),
+                    style: "destructive",
+                  },
+                ]
+              );
+            }}>
             <Trash2
               size={18}
-              color="black"
+              color="#D9D9D9"
             />
           </TouchableOpacity>
         )}

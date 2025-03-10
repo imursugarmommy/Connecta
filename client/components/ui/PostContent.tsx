@@ -43,7 +43,7 @@ const PostContent = memo(({ post }: { post: Post }) => {
                 backgroundColor: `hsl(${user ? user.id : 0}, 40%, 40%)`,
               }}>
               <Text className="text-white text-xl">
-                {(user && user.name.split("")[0].toUpperCase()) || ""}
+                {user?.name?.split("")[0].toUpperCase() || ""}
               </Text>
             </View>
           )}

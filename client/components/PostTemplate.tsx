@@ -1,21 +1,15 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Post } from "../types/Post";
 import { useAuth } from "@/app/helpers/AuthContext";
 import { usePosts } from "@/app/helpers/PostContext";
 
-import {
-  Trash2,
-  ThumbsUp,
-  MessageCircle,
-  Heart,
-  Bookmark,
-  Share,
-} from "lucide-react-native";
+import { MessageCircle, Heart, Bookmark, Share } from "lucide-react-native";
 import axios from "axios";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
+import PostContent from "./ui/PostContent";
+import * as Sharing from "expo-sharing";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -27,7 +21,7 @@ const PostTemplate = ({
   handleSnapPress?: any;
 }) => {
   const { authState } = useAuth();
-  const { postState, setPostState, removeItem } = usePosts();
+  const { postState, setPostState } = usePosts();
 
   const addLike = async (id: number) => {
     axios
@@ -69,57 +63,8 @@ const PostTemplate = ({
   // TODO: prevent re-render of image on addLike
   return (
     <View className="w-full border-gray-50 mb-6 rounded-md overflow-hidden">
-      <View className="w-full flex-row justify-between items-center">
-        <View className="flex-row items-center gap-x-4">
-          {post.profileImage ? (
-            <Image
-              source={{
-                uri: `http://${serverip}:6969/images/users/${post.profileImage}`,
-              }}
-              className="w-8 h-8 rounded-full object-cover bg-gray-200"
-            />
-          ) : (
-            <View
-              className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{
-                backgroundColor: `hsl(${authState.id}, 40%, 40%)`,
-              }}>
-              <Text className="text-white text-xl">
-                {authState.name.split("")[0].toUpperCase()}
-              </Text>
-            </View>
-          )}
-          <Text className="text-xl text-black">{post.name}</Text>
+      <PostContent post={post} />
 
-          <TouchableOpacity
-            onPress={() => router.push(`/user/${post.username}` as any)}>
-            <Text className="text-sm text-gray-500">@{post.username}</Text>
-          </TouchableOpacity>
-        </View>
-
-        {authState.id === post.UserId && (
-          <TouchableOpacity onPress={() => removeItem(post.id)}>
-            <Trash2
-              size={18}
-              color="black"
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-      <View className="w-full py-2">
-        <View className={"flex " + (post.postImage && "gap-y-2")}>
-          <Text className="text-lg font-bold">{post.title}</Text>
-          {post.postImage && (
-            <Image
-              source={{
-                uri: `http://${serverip}:6969/images/posts/${post.postImage}`,
-              }}
-              className="w-full h-52 object-cover bg-black"
-            />
-          )}
-          <Text className="text-lg">{post.content}</Text>
-        </View>
-      </View>
       <View className="w-full flex-row">
         <View className="bg-transparent flex-row items-center">
           <TouchableOpacity
@@ -128,14 +73,24 @@ const PostTemplate = ({
             <Heart
               fill={
                 post.Likes?.some((like) => like.UserId === authState.id)
-                  ? "black"
+                  ? "#FFD343"
                   : "transparent"
               }
               size={20}
-              color={"black"}
+              color={
+                post.Likes?.some((like) => like.UserId === authState.id)
+                  ? "#FFD343"
+                  : "#D9D9D9"
+              }
             />
 
-            <Text className="text-gray-700">
+            <Text
+              className="text-gray-300"
+              style={{
+                color: post.Likes?.some((like) => like.UserId === authState.id)
+                  ? "#FFD343"
+                  : "#D9D9D9",
+              }}>
               {post.Likes ? post.Likes.length : 0}
             </Text>
           </TouchableOpacity>
@@ -143,23 +98,22 @@ const PostTemplate = ({
           <View className="flex-row items-center gap-x-1">
             <MessageCircle
               size={20}
-              color={"black"}
+              color={"#D9D9D9"}
             />
-            <Text className="text-gray-700">
+            <Text className="text-gray-300">
               {post.Comments ? post.Comments.length : 0}
             </Text>
           </View>
         </View>
         <View className="flex-grow flex-row justify-end bg-transparent gap-x-3">
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={async () =>
+              await Sharing.shareAsync(
+                `http://${serverip}:6969/posts/` + post.id
+              )
+            }>
             <Share
-              color={"black"}
-              size={20}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Bookmark
-              color={"black"}
+              color={"#D9D9D9"}
               size={20}
             />
           </TouchableOpacity>
@@ -168,5 +122,4 @@ const PostTemplate = ({
     </View>
   );
 };
-
 export default PostTemplate;

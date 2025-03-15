@@ -34,17 +34,27 @@ router.get("/", async (req, res) => {
 
 // register new user
 router.post("/", async (req, res) => {
-  const { email, username, password } = req.body;
+  const { email, name, username, password } = req.body;
 
   bcrypt.hash(password, 10).then((hash) => {
     Users.create({
       email,
       username,
+      name,
       password: hash,
     });
   });
 
   res.json({ message: "User created" });
+});
+
+router.get("/byid/:id", async (req, res) => {
+  const { id } = req.params;
+  const user = await Users.findByPk(id);
+
+  if (!user) return res.json({ error: "User not found" });
+
+  res.json(user);
 });
 
 // log into account

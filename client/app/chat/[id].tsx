@@ -11,6 +11,7 @@ import { SendHorizonal } from "lucide-react-native";
 import axios from "axios";
 import { useAuth } from "../helpers/AuthContext";
 import { useLocalSearchParams } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -51,14 +52,29 @@ const Messages = () => {
 
   const [input, setInput] = useState("");
 
-  const sendMessage = () => {
-    if (input.trim()) {
-      setMessages([
-        ...messages,
-        { id: Date.now().toString(), text: input, sender: "me" },
-      ]);
-      setInput("");
-    }
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const newMessage = {
+      text: input,
+      chatId: Number(chatId),
+    };
+
+    const response = await axios.post(
+      `http://${serverip}:6969/messages`,
+      newMessage,
+      {
+        headers: {
+          accessToken: await AsyncStorage.getItem("accessToken"),
+        },
+      }
+    );
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { ...response.data, sender: "me" },
+    ]);
+    setInput("");
   };
 
   return (

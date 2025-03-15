@@ -6,14 +6,49 @@ import {
   FlatList,
   KeyboardAvoidingView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SendHorizonal } from "lucide-react-native";
+import axios from "axios";
+import { useAuth } from "../helpers/AuthContext";
+import { useLocalSearchParams } from "expo-router";
+
+const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
+interface Message {
+  id: number;
+  text: string;
+  chatId: number;
+  userId: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const Messages = () => {
+  const { authState } = useAuth();
+  const { id: chatId } = useLocalSearchParams();
+
   const [messages, setMessages] = useState([
     { id: "1", text: "Hey! How's it going?", sender: "other" },
     { id: "2", text: "All good! You?", sender: "me" },
   ]);
+
+  useEffect(() => {
+    async function getMessages() {
+      const messageResponse = await axios.get(
+        `http://${serverip}:6969/messages/${chatId}`
+      );
+
+      const messagesData = messageResponse.data.map((message: Message) => ({
+        ...message,
+        sender: message.userId === authState.id ? "me" : "other",
+      }));
+
+      setMessages(messagesData);
+    }
+
+    getMessages();
+  }, []);
+
   const [input, setInput] = useState("");
 
   const sendMessage = () => {

@@ -28,6 +28,7 @@ const Modal = () => {
   const [content, setContent] = useState("");
   const [activeButtons, setActiveButtons] = useState<string[]>([]);
   const [image, setImage] = useState<string | null>(null);
+  const maxLength = 320;
 
   const { addItem } = usePosts();
 
@@ -104,6 +105,7 @@ const Modal = () => {
             onChangeText={(title) => setTitle(title)}
             placeholder="What's do you want to talk about?"
             className="p-2 w-full text-sm font-semibold h-10"
+            maxLength={60}
           />
 
           <Divider orientation="horizontal" />
@@ -115,6 +117,7 @@ const Modal = () => {
             className="max-w-full p-2"
             style={{ height: image ? "auto" : 240 }}
             multiline={true}
+            maxLength={maxLength}
           />
 
           {image && (
@@ -148,7 +151,7 @@ const Modal = () => {
         {/* progress bar for word count */}
         <View
           className="h-1 bg-[#ffd455]"
-          style={{ width: "70%" }}></View>
+          style={{ width: `${(content.length / maxLength) * 100}%` }}></View>
 
         <View className="flex-row w-full justify-between items-center p-2 bg-gray-100">
           <View className="flex-row flex-grow items-center justify-between">

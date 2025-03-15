@@ -20,6 +20,9 @@ app.use("/comments", commentRouter);
 const likeRouter = require("./routes/Likes");
 app.use("/likes", likeRouter);
 
+const chatRouter = require("./routes/Chats");
+app.use("/chats", chatRouter);
+
 db.sequelize.sync().then(() => {
   app.listen(6969, () => {
     console.log("Server started on port 6969");

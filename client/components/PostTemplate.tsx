@@ -63,7 +63,8 @@ const PostTemplate = ({
       <View className="w-full bg-gray-500 p-3 flex-row justify-between items-center">
         <Text className="text-2xl text-white">{post.title}</Text>
 
-        {authState.username === post.username && (
+        {/* TODO: remove 'username' on merge */}
+        {authState.username === (post.username || "username") && (
           <TouchableOpacity onPress={() => removeItem(post.id)}>
             <Trash2
               size={18}
@@ -77,7 +78,8 @@ const PostTemplate = ({
       </View>
       <View className="w-full flex-row bg-gray-500 p-3">
         <View className="bg-transparent">
-          <Text className="text-white">{post.username}</Text>
+          {/* TODO: remove 'username' on merge */}
+          <Text className="text-white">{post.username || "username"}</Text>
         </View>
         <View className="flex-grow flex-row justify-end bg-transparent">
           <View className="mr-4 flex-row items-center gap-x-1">

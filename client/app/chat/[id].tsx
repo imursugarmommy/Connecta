@@ -6,11 +6,11 @@ import {
   FlatList,
   KeyboardAvoidingView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { SendHorizonal } from "lucide-react-native";
 import axios from "axios";
 import { useAuth } from "../helpers/AuthContext";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
@@ -32,6 +32,27 @@ const Messages = () => {
     { id: "1", text: "Hey! How's it going?", sender: "other" },
     { id: "2", text: "All good! You?", sender: "me" },
   ]);
+
+  useLayoutEffect(() => {
+    async function checkChatAuth() {
+      const response = await axios.get(
+        `http://${serverip}:6969/chats/${chatId}`
+      );
+
+      const chat = response.data;
+
+      if (
+        authState.id !== Number(chat.userId) &&
+        authState.id !== Number(chat.userId2)
+      ) {
+        alert("You are not authorized to view this chat!");
+        router.push("/");
+        return;
+      }
+    }
+
+    checkChatAuth();
+  }, []);
 
   useEffect(() => {
     async function getMessages() {

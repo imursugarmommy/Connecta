@@ -14,4 +14,12 @@ router.get("/", validateToken, async (req, res) => {
   res.json(chats);
 });
 
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const chat = await Chats.findByPk(id);
+
+  res.json(chat);
+});
+
 module.exports = router;

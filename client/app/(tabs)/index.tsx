@@ -95,6 +95,10 @@ export default function HomeScreen() {
         <Text>Logout</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity onPress={() => router.push("/user/lelv2" as any)}>
+        <Text>User Page lelv2</Text>
+      </TouchableOpacity>
+
       <Divider orientation="horizontal" />
 
       <ScrollView className="w-full h-full p-4">

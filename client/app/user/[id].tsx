@@ -1,10 +1,11 @@
-import { View, Text } from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import ProfilePage from "@/components/ui/ProfilePage";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { User } from "@/types/User";
+import { ChevronLeft, Search } from "lucide-react-native";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -22,9 +23,27 @@ const UserPage = () => {
   if (!user) return <Text>Loading...</Text>;
 
   return (
-    <View className="flex-1">
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="px-6 justify-between items-center flex-row">
+        <TouchableOpacity onPress={() => router.back()}>
+          <ChevronLeft
+            color={"black"}
+            size={28}
+          />
+        </TouchableOpacity>
+
+        {/* 
+        TODO: Implement search functionality.
+
+        <Search
+          color={"black"}
+          size={24}
+        /> 
+        */}
+      </View>
+
       <ProfilePage user={user} />
-    </View>
+    </SafeAreaView>
   );
 };
 

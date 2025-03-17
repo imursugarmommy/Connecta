@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 
 import { useAuth } from "@/app/helpers/AuthContext";
 import { router, useLocalSearchParams } from "expo-router";
@@ -18,7 +18,7 @@ function ProfilePage({ user }: { user: User }) {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [userLikes, setUserLikes] = useState<Post[]>([]);
 
-  const { username } = useLocalSearchParams();
+  const { id: username } = useLocalSearchParams();
   const isYourProfile = authState.username === username || !username;
 
   const [activeTab, setActiveTab] = useState("Posts");
@@ -55,13 +55,15 @@ function ProfilePage({ user }: { user: User }) {
 
   return (
     <ScrollView className="flex-1 p-4 px-6 bg-white dark:bg-black">
-      <UserHeader
-        user={user}
-        isYourProfile={isYourProfile}
-      />
+      <View className="mb-4">
+        <UserHeader
+          user={user}
+          isYourProfile={isYourProfile}
+        />
+      </View>
 
       {isYourProfile && (
-        <View className="my-4">
+        <View className="mb-4">
           <TabSwitcher
             activeTab={activeTab}
             setActiveTab={setActiveTab}

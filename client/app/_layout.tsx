@@ -74,6 +74,12 @@ function RootLayoutNav() {
                 name="post/[id]"
                 options={{ title: "Post Overview", headerBackTitle: "Back" }}
               />
+              <Stack.Screen
+                name="user/[id]"
+                options={{
+                  headerShown: false,
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </PostProvider>

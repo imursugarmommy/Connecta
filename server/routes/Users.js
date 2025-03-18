@@ -67,7 +67,6 @@ router.post("/login", async (req, res) => {
         id: user.id,
         email: user.email,
         username: user.username,
-        profileImage: user.profileImage,
         name: user.name,
       },
       process.env.JWT_SECRET
@@ -119,7 +118,11 @@ router.post(
       }
 
       await Users.update({ profileImage }, { where: { id: userId } });
-      res.json({ message: "Profile image updated", profileImage });
+
+      res.json({
+        message: "Profile image updated",
+        profileImage,
+      });
     } catch (error) {
       res.status(500).json({ error: "Failed to update profile image" });
     }

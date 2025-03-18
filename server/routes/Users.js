@@ -32,6 +32,15 @@ router.get("/", async (req, res) => {
   res.json(users);
 });
 
+router.get("/byid/:id", async (req, res) => {
+  const id = req.params.id;
+  const user = await Users.findByPk(id);
+
+  if (!user) return res.json({ error: "User not found" });
+
+  res.json(user);
+});
+
 // register new user
 router.post("/", async (req, res) => {
   const { email, username, password } = req.body;

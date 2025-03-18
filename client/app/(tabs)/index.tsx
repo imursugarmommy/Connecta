@@ -61,6 +61,7 @@ export default function HomeScreen() {
       <Animated.View
         className="absolute top-0 left-0 w-full h-full z-10"
         style={animatedStyle}
+        pointerEvents={isOpen ? "auto" : "none"}
       />
 
       <View

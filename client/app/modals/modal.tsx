@@ -94,7 +94,7 @@ const Modal = () => {
           style={{
             height: 30,
             width: 30,
-            borderRadius: "50%",
+            borderRadius: 15,
             resizeMode: "contain",
           }}
         />
@@ -118,6 +118,7 @@ const Modal = () => {
             style={{ height: image ? "auto" : 240 }}
             multiline={true}
             maxLength={maxLength}
+            textAlignVertical="top"
           />
 
           {image && (

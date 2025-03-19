@@ -43,4 +43,24 @@ router.post("/:id", validateToken, async (req, res) => {
   }
 });
 
+router.get("/followers/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  const followers = await Followers.findAll({
+    where: { userId },
+  });
+
+  res.json(followers);
+});
+
+router.get("/following/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  const following = await Followers.findAll({
+    where: { followerId: userId },
+  });
+
+  res.json(following);
+});
+
 module.exports = router;

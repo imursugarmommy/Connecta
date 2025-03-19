@@ -6,6 +6,8 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import UserStats from "./UserStats";
+
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 const UserHeader = ({
@@ -149,20 +151,7 @@ const UserHeader = ({
             @{user.username}
           </Text>
 
-          <View className="flex-row flex-grow justify-between items-center">
-            <View className="flex items-center">
-              <Text className="text-lg">13</Text>
-              <Text className="font-bold">Posts</Text>
-            </View>
-            <View className="flex items-center">
-              <Text className="text-lg">96</Text>
-              <Text className="font-bold">Follower</Text>
-            </View>
-            <View className="flex items-center">
-              <Text className="text-lg">126</Text>
-              <Text className="font-bold">Following</Text>
-            </View>
-          </View>
+          <UserStats user={user} />
         </View>
       </View>
 

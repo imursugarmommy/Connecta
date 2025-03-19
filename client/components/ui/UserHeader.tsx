@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Camera, Pencil, Share, UserPlus } from "lucide-react-native";
+import { Camera, Pencil, Share } from "lucide-react-native";
 import { User } from "@/types/User";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
@@ -16,7 +16,7 @@ const UserHeader = ({
   isYourProfile: boolean;
 }) => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [following, setFollowing] = useState<boolean>(false);
+  const [following, setFollowing] = useState<boolean>(true);
 
   useEffect(() => {
     (async () => {
@@ -24,6 +24,16 @@ const UserHeader = ({
 
       if (isYourProfile) setProfileImage(profileImage);
       else setProfileImage(user.profileImage);
+    })();
+
+    (async () => {
+      const following = await axios.get(
+        `http://${serverip}:6969/follows/${user.id}`
+      );
+
+      if (following.data.error) return console.error("Error getting following");
+
+      setFollowing(following.data.following);
     })();
   }, []);
 
@@ -79,8 +89,22 @@ const UserHeader = ({
 
   function editProfile() {}
 
-  function handleFollow() {
-    setFollowing(!following);
+  async function handleFollow() {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+
+    const response = await axios.post(
+      `http://${serverip}:6969/follows/${user.id}`,
+      {},
+      {
+        headers: {
+          accessToken,
+        },
+      }
+    );
+
+    if (response.data.error) return console.error("Error following user");
+
+    setFollowing(response.data.following);
   }
 
   return (
@@ -161,15 +185,15 @@ const UserHeader = ({
           <TouchableOpacity
             className="flex-row flex-1 justify-center items-center bg-[#FFD343] rounded-lg py-1"
             style={{
-              backgroundColor: following ? "#FFD343" : "white",
-              borderWidth: following ? 0 : 1,
-              borderColor: following ? "white" : "#ededed",
+              backgroundColor: following ? "white" : "#FFD343",
+              borderWidth: following ? 1 : 0,
+              borderColor: following ? "#ededed" : "white",
             }}
             onPress={handleFollow}>
             <Text
               className="text-lg mr-2"
-              style={{ color: following ? "white" : "black" }}>
-              {following ? "Follow" : "Following"}
+              style={{ color: following ? "black" : "white" }}>
+              {following ? "Following" : "Follow"}
             </Text>
           </TouchableOpacity>
         )}

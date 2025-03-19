@@ -5,11 +5,11 @@ require("dotenv").config();
 
 const { validateToken } = require("../middleware/AuthMiddleware");
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateToken, async (req, res) => {
   const userId = req.params.id;
 
   const followers = await Followers.findOne({
-    where: { userId },
+    where: { userId, followerId: req.user.id },
   });
 
   if (!followers) return res.json({ following: false });

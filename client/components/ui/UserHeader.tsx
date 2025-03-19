@@ -99,9 +99,6 @@ const UserHeader = ({
   async function handleFollow() {
     const accessToken = await AsyncStorage.getItem("accessToken");
 
-    console.log(accessToken);
-    console.log(user.id);
-
     const response = await axios.post(
       `http://${serverip}:6969/follows/${user.id}`,
       {},
@@ -116,8 +113,6 @@ const UserHeader = ({
 
     setFollowing(response.data.following);
   }
-
-  console.log(following);
 
   return (
     <View className="flex gap-y-2 items-center">

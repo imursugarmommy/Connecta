@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Camera, Pencil, Share } from "lucide-react-native";
+import { Camera, Pencil, Share, UserPlus } from "lucide-react-native";
 import { User } from "@/types/User";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
@@ -16,6 +16,7 @@ const UserHeader = ({
   isYourProfile: boolean;
 }) => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [following, setFollowing] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -77,6 +78,10 @@ const UserHeader = ({
   function shareProfile() {}
 
   function editProfile() {}
+
+  function handleFollow() {
+    setFollowing(!following);
+  }
 
   return (
     <View className="flex gap-y-2 items-center">
@@ -140,7 +145,7 @@ const UserHeader = ({
       <View className="w-full flex-row justify-between gap-x-2">
         {isYourProfile && (
           <TouchableOpacity
-            className="flex-row flex-grow justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
+            className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
             onPress={editProfile}>
             <Text className="text-lg text-black dark:text-white mr-2">
               Edit Profile
@@ -152,8 +157,25 @@ const UserHeader = ({
           </TouchableOpacity>
         )}
 
+        {!isYourProfile && (
+          <TouchableOpacity
+            className="flex-row flex-1 justify-center items-center bg-[#FFD343] rounded-lg py-1"
+            style={{
+              backgroundColor: following ? "#FFD343" : "white",
+              borderWidth: following ? 0 : 1,
+              borderColor: following ? "white" : "#ededed",
+            }}
+            onPress={handleFollow}>
+            <Text
+              className="text-lg mr-2"
+              style={{ color: following ? "white" : "black" }}>
+              {following ? "Follow" : "Following"}
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity
-          className="flex-row flex-grow justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
+          className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
           onPress={shareProfile}>
           <Text className="text-lg text-black dark:text-white mr-2">
             Share Profile

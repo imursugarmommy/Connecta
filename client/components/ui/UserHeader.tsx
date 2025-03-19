@@ -128,7 +128,7 @@ const UserHeader = ({
                   backgroundColor: `hsl(${user.id}, 40%, 40%)`,
                 }}>
                 <Text className="text-white text-4xl">
-                  {user.name?.split("")[0].toUpperCase()}
+                  {user?.name?.split("")[0]}
                 </Text>
               </View>
             )}

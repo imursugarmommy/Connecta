@@ -44,7 +44,7 @@ export default function CheckAuth({ children }: { children: React.ReactNode }) {
 
             await AsyncStorage.setItem(
               "profileImage",
-              profileRes.data.profileImage
+              profileRes.data.profileImage || ""
             );
 
             setAuthState({

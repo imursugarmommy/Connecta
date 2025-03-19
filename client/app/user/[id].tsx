@@ -20,7 +20,12 @@ const UserPage = () => {
     });
   }, []);
 
-  if (!user) return <Text>Loading...</Text>;
+  if (!user)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-2xl text-red-500">User Not found!</Text>
+      </View>
+    );
 
   return (
     <SafeAreaView className="flex-1 bg-white">

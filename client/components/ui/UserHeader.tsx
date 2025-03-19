@@ -16,6 +16,7 @@ const UserHeader = ({
   isYourProfile: boolean;
 }) => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [following, setFollowing] = useState<boolean>(true);
 
   useEffect(() => {
     (async () => {
@@ -23,6 +24,16 @@ const UserHeader = ({
 
       if (isYourProfile) setProfileImage(profileImage);
       else setProfileImage(user.profileImage);
+    })();
+
+    (async () => {
+      const following = await axios.get(
+        `http://${serverip}:6969/follows/${user.id}`
+      );
+
+      if (following.data.error) return console.error("Error getting following");
+
+      setFollowing(following.data.following);
     })();
   }, []);
 
@@ -77,6 +88,24 @@ const UserHeader = ({
   function shareProfile() {}
 
   function editProfile() {}
+
+  async function handleFollow() {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+
+    const response = await axios.post(
+      `http://${serverip}:6969/follows/${user.id}`,
+      {},
+      {
+        headers: {
+          accessToken,
+        },
+      }
+    );
+
+    if (response.data.error) return console.error("Error following user");
+
+    setFollowing(response.data.following);
+  }
 
   return (
     <View className="flex gap-y-2 items-center">
@@ -140,7 +169,7 @@ const UserHeader = ({
       <View className="w-full flex-row justify-between gap-x-2">
         {isYourProfile && (
           <TouchableOpacity
-            className="flex-row flex-grow justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
+            className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
             onPress={editProfile}>
             <Text className="text-lg text-black dark:text-white mr-2">
               Edit Profile
@@ -152,8 +181,25 @@ const UserHeader = ({
           </TouchableOpacity>
         )}
 
+        {!isYourProfile && (
+          <TouchableOpacity
+            className="flex-row flex-1 justify-center items-center bg-[#FFD343] rounded-lg py-1"
+            style={{
+              backgroundColor: following ? "white" : "#FFD343",
+              borderWidth: following ? 1 : 0,
+              borderColor: following ? "#ededed" : "white",
+            }}
+            onPress={handleFollow}>
+            <Text
+              className="text-lg mr-2"
+              style={{ color: following ? "black" : "white" }}>
+              {following ? "Following" : "Follow"}
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity
-          className="flex-row flex-grow justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
+          className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
           onPress={shareProfile}>
           <Text className="text-lg text-black dark:text-white mr-2">
             Share Profile

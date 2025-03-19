@@ -96,8 +96,8 @@ export default function HomeScreen() {
         <Text>Logout</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push("/user/lelv2" as any)}>
-        <Text>User Page lelv2</Text>
+      <TouchableOpacity onPress={() => router.push("/user/lelv" as any)}>
+        <Text>User Page lelv</Text>
       </TouchableOpacity>
 
       <Divider orientation="horizontal" />

@@ -7,6 +7,7 @@ import { usePosts } from "@/app/helpers/PostContext";
 import { router } from "expo-router";
 import { Trash2 } from "lucide-react-native";
 import { Post } from "@/types/Post";
+import RenderHTML from "react-native-render-html";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -97,7 +98,11 @@ const PostContent = memo(({ post }: { post: Post }) => {
               className="w-full h-52 object-cover bg-black"
             />
           )}
-          <Text className="text-lg">{post.content}</Text>
+
+          <RenderHTML
+            contentWidth={500}
+            source={{ html: post.content }}
+          />
         </View>
       </View>
     </View>

@@ -48,11 +48,18 @@ const login = () => {
         return setErrorMessage(userResponse.data.error);
 
       await AsyncStorage.setItem("accessToken", loginResponse.data);
+      await AsyncStorage.setItem(
+        "profileImage",
+        userResponse.data[0].profileImage || ""
+      );
+
+      const userData = userResponse.data[0];
 
       login({
         ...authState,
-        id: userResponse.data.id,
-        email: userResponse.data.email,
+        id: userData.id,
+        profileImage: userData.profileImage || "",
+        email: userData.email,
         username: data.username,
         state: true,
       });

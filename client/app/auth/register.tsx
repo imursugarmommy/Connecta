@@ -56,6 +56,7 @@ const login = () => {
         return setErrorMessage(loginResponse.data.error);
 
       await AsyncStorage.setItem("accessToken", loginResponse.data);
+      await AsyncStorage.setItem("profileImage", "");
 
       login({
         ...authState,

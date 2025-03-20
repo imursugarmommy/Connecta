@@ -13,23 +13,21 @@ import * as ImagePicker from "expo-image-picker";
 
 import Divider from "@/components/ui/Divider";
 
-import {
-  ImagePlus,
-  Bold,
-  Italic,
-  Underline,
-  List,
-  X,
-} from "lucide-react-native";
+import { ImagePlus, Bold, Italic, Underline, X } from "lucide-react-native";
 import { useAuth } from "../helpers/AuthContext";
+import {
+  RichEditor,
+  RichToolbar,
+  actions,
+} from "react-native-pell-rich-editor";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 const Modal = () => {
   const textInputRef = useRef<TextInput>(null);
+  const richTextRef = useRef<RichEditor>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [activeButtons, setActiveButtons] = useState<string[]>([]);
   const [image, setImage] = useState<string | null>(null);
   const maxLength = 320;
 
@@ -43,6 +41,11 @@ const Modal = () => {
       }, 0);
     }
   }, []);
+
+  const getPlainTextLength = (html: string) => {
+    const plainText = html.replace(/<[^>]*>/g, ""); // Remove HTML tags
+    return plainText.length;
+  };
 
   const onSubmit = async () => {
     if (!content || !title) return;
@@ -64,14 +67,6 @@ const Modal = () => {
     addItem(formData);
 
     if (router.canGoBack()) router.back();
-  };
-
-  const toggleButton = (button: string) => {
-    setActiveButtons((prev) =>
-      prev.includes(button)
-        ? prev.filter((b) => b !== button)
-        : [...prev, button]
-    );
   };
 
   const pickImage = async () => {
@@ -111,15 +106,22 @@ const Modal = () => {
 
           <Divider orientation="horizontal" />
 
-          <TextInput
-            value={content}
-            onChangeText={(content) => setContent(content)}
+          <RichEditor
+            ref={richTextRef}
+            initialContentHTML={content}
+            onChange={(html) => {
+              const plainTextLength = getPlainTextLength(html);
+
+              if (plainTextLength <= maxLength) setContent(html);
+              else richTextRef.current?.setContentHTML(content);
+            }}
             placeholder="What's on your mind?"
-            className="max-w-full p-2"
             style={{ height: image ? "auto" : 240 }}
-            multiline={true}
-            maxLength={maxLength}
-            textAlignVertical="top"
+            editorStyle={{
+              backgroundColor: "#fff",
+              placeholderColor: "#aaa",
+              contentCSSText: "font-size: 14px; padding: 10px;",
+            }}
           />
 
           {image && (
@@ -145,62 +147,57 @@ const Modal = () => {
         </View>
       </View>
 
-      {/* TODO: fix broken view */}
       <KeyboardAvoidingView
         behavior={"padding"}
         keyboardVerticalOffset={130}
         className="absolute bottom-0 w-full">
-        {/* progress bar for word count */}
         <View
           className="h-1 bg-[#ffd455]"
-          style={{ width: `${(content.length / maxLength) * 100}%` }}></View>
+          style={{
+            width: `${(getPlainTextLength(content) / maxLength) * 100}%`,
+          }}
+        />
 
-        <View className="flex-row w-full justify-between items-center p-2 bg-gray-100">
-          <View className="flex-row flex-grow items-center justify-between">
+        <View className="flex-row w-full px-2 bg-gray-100">
+          <View className="flex-1 flex-row justify-between items-center gap-x-2">
             <TouchableOpacity
               className="p-2"
               onPress={pickImage}>
               <ImagePlus color="black" />
             </TouchableOpacity>
 
+            <RichToolbar
+              editor={richTextRef}
+              actions={[
+                actions.setBold,
+                actions.setItalic,
+                actions.setUnderline,
+              ]}
+              iconMap={{
+                [actions.setBold]: () => <Bold color="black" />,
+                [actions.setItalic]: () => <Italic color="black" />,
+                [actions.setUnderline]: () => <Underline color="black" />,
+              }}
+              style={{
+                flex: 1,
+                backgroundColor: "transparent",
+                padding: 4,
+              }}
+              selectedButtonStyle={{
+                backgroundColor: "#d1d5db",
+                borderRadius: 4,
+                marginHorizontal: 12,
+              }}
+              unselectedButtonStyle={{
+                marginHorizontal: 12,
+              }}
+            />
             <TouchableOpacity
-              className={`p-2 ${
-                activeButtons.includes("Bold") ? "bg-gray-300" : ""
-              } rounded-sm`}
-              onPress={() => toggleButton("Bold")}>
-              <Bold color="black" />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className={`p-2 ${
-                activeButtons.includes("Italic") ? "bg-gray-300" : ""
-              } rounded-sm`}
-              onPress={() => toggleButton("Italic")}>
-              <Italic color="black" />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className={`p-2 ${
-                activeButtons.includes("Underline") ? "bg-gray-300" : ""
-              } rounded-sm`}
-              onPress={() => toggleButton("Underline")}>
-              <Underline color="black" />
-            </TouchableOpacity>
-
-            <TouchableOpacity className="p-2">
-              <List color="black" />
+              className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl "
+              onPress={() => onSubmit()}>
+              <Text className="text-white">Post</Text>
             </TouchableOpacity>
           </View>
-
-          <View>
-            <Divider orientation="vertical" />
-          </View>
-
-          <TouchableOpacity
-            className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl "
-            onPress={() => onSubmit()}>
-            <Text className="text-white">Post</Text>
-          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </View>

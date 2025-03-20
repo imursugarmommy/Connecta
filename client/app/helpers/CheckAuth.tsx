@@ -11,6 +11,7 @@ export default function CheckAuth({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function checkToken() {
       const token = await AsyncStorage.getItem("accessToken");
+      const profileImage = await AsyncStorage.getItem("profileImage");
 
       if (!token) {
         setAuthState({
@@ -40,7 +41,7 @@ export default function CheckAuth({ children }: { children: React.ReactNode }) {
           } else {
             setAuthState({
               id: res.data.id,
-              profileImage: res.data.profileImage,
+              profileImage,
               state: true,
               name: res.data.name,
               username: res.data.username,

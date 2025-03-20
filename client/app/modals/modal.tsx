@@ -21,6 +21,9 @@ import {
   List,
   X,
 } from "lucide-react-native";
+import { useAuth } from "../helpers/AuthContext";
+
+const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 const Modal = () => {
   const textInputRef = useRef<TextInput>(null);
@@ -30,6 +33,7 @@ const Modal = () => {
   const [image, setImage] = useState<string | null>(null);
   const maxLength = 320;
 
+  const { authState } = useAuth();
   const { addItem } = usePosts();
 
   useEffect(() => {
@@ -77,7 +81,7 @@ const Modal = () => {
       return alert("Sorry, we need camera roll permissions to make this work!");
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images", "videos"],
+      mediaTypes: ["images"],
       allowsEditing: true,
       quality: 1,
       aspect: [4, 3],
@@ -90,13 +94,10 @@ const Modal = () => {
     <View className="flex-1 bg-white flex justify-between">
       <View className="flex-row m-4">
         <Image
-          source={require("../../assets/images/favicon.png")}
-          style={{
-            height: 30,
-            width: 30,
-            borderRadius: 15,
-            resizeMode: "contain",
+          source={{
+            uri: `http://${serverip}:6969/images/users/${authState.profileImage}`,
           }}
+          className="w-8 h-8 rounded-full object-contain bg-gray-200"
         />
         <View className="flex-1">
           <TextInput

@@ -9,6 +9,7 @@ router.get("/", validateToken, async (req, res) => {
     where: {
       [Op.or]: [{ userId: req.user.id }, { userId2: req.user.id }],
     },
+    order: [["updatedAt", "DESC"]],
   });
 
   res.json(chats);

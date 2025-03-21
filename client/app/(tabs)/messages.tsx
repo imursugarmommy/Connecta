@@ -30,6 +30,15 @@ const ChatList = () => {
     async function fetchData() {
       const accessToken = await AsyncStorage.getItem("accessToken");
 
+      await axios.get(
+        `http://${serverip}:6969/follows/mutual/${authState.id}`,
+        {
+          headers: {
+            accessToken,
+          },
+        }
+      );
+
       const chatResponse = await axios.get(`http://${serverip}:6969/chats/`, {
         headers: {
           accessToken,

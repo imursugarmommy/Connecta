@@ -1,14 +1,11 @@
 import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Octicons from "@expo/vector-icons/Octicons";
-import { Link, router, Tabs } from "expo-router";
-import { Pressable } from "react-native";
+import { router, Tabs } from "expo-router";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import CheckAuth from "../helpers/CheckAuth";
+import PageHeader from "@/components/ui/PageHeader";
 
 import { Home, Search, Plus, Send, UserRound } from "lucide-react-native";
 
@@ -30,6 +27,7 @@ export default function TabLayout() {
           name="index"
           options={{
             title: "Home",
+            header: PageHeader,
             tabBarIcon: ({ color }) => <Home color={color} />,
           }}
         />

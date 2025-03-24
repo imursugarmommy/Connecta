@@ -69,29 +69,6 @@ export default function HomeScreen() {
         pointerEvents={isOpen ? "auto" : "none"}
       />
 
-      {authState.state ? (
-        <Text>{JSON.stringify(authState, null, 2)}</Text>
-      ) : (
-        <>
-          <Link
-            href="/auth/login"
-            className="text-blue-500 my-4">
-            Sign in
-          </Link>
-          <Link
-            href="/auth/register"
-            className="text-blue-500 my-4">
-            Register
-          </Link>
-        </>
-      )}
-
-      <TouchableOpacity onPress={() => logout()}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
-
-      <Divider orientation="horizontal" />
-
       <ScrollView className="w-full h-full p-4">
         {postState.map((post: Post, index: number) => (
           <View

@@ -12,6 +12,7 @@ import {
   View,
   ScrollView,
   KeyboardAvoidingView,
+  Image,
 } from "react-native";
 import PostTemplate from "../../components/PostTemplate";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,11 +28,15 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import BottomSheetComponent from "@/components/ui/BottomSheetComponent";
+import Divider from "@/components/ui/Divider";
+import { User } from "@/types/User";
 
 interface Comment {
   id: number;
   username: string;
   commentBody: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 function Post() {
@@ -39,6 +44,7 @@ function Post() {
 
   let { id } = useLocalSearchParams();
 
+  const [userMap, setUserMap] = useState<{ [key: number]: User }>({});
   const [postObj, setPostObj] = useState({} as PostType);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
@@ -111,6 +117,27 @@ function Post() {
     }
   }, [postState, id]);
 
+  useEffect(() => {
+    async function fetchUsers() {
+      const userPromises = comments.map(async (comment) => {
+        const userResponse = await axios.get(
+          `http://${serverip}:6969/users/${comment.username}`
+        );
+        return { id: comment.id, user: userResponse.data[0] };
+      });
+
+      const users = await Promise.all(userPromises);
+      const userMap = users.reduce((acc, { id, user }) => {
+        acc[id] = user;
+        return acc;
+      }, {} as { [key: number]: User });
+
+      setUserMap(userMap);
+    }
+
+    fetchUsers();
+  }, [comments]);
+
   if (Object.keys(postObj).length === 0 && postObj.constructor === Object)
     return <Text>Loading...</Text>;
 
@@ -140,6 +167,8 @@ function Post() {
             // ensure comment id is also in this object to prevent bug:
             // newly added comments can not be deleted bc of missing id
             id: res.data.id,
+            createdAt: res.data.createdAt,
+            updatedAt: res.data.updatedAt,
           };
 
           setPostState((prev: any[]) => {
@@ -203,33 +232,51 @@ function Post() {
             handleSnapPress={handleSnapPress}
           />
         </View>
-        <View className="w-full items-center">
-          <View className="w-full items-center">
+
+        <View className="w-full">
+          <Text className="text-sm font-bold text-black">
+            Comments ({comments.length}):
+          </Text>
+
+          <Divider orientation="horizontal" />
+
+          <View className="w-full items-center p-2">
             {comments.map((comment: Comment, key) => {
+              const userData = userMap[comment.id];
+
               return (
                 <View
-                  className="w-full border border-gray-200 rounded-lg my-2"
+                  className="w-full my-2 flex flex-row justify-between relative"
                   key={key}>
-                  <View className="flex p-2 px-4 flex-row justify-between">
-                    <View>
+                  <View className="flex-row gap-x-2 w-full">
+                    <Image
+                      source={{
+                        uri: `http://${serverip}:6969/images/users/${userData?.profileImage}`,
+                      }}
+                      className="w-8 h-8 rounded-full object-contain bg-gray-200"
+                    />
+
+                    <View className="flex-1">
                       <View className="flex-row justify-between items-center">
-                        <Text className="font-bold">{comment.username}:</Text>
+                        <Text className="font-bold text-[#FFD343]">
+                          {userMap[comment.id]?.username}:
+                        </Text>
                       </View>
-                      <View>
-                        <Text>{comment.commentBody}</Text>
-                      </View>
+
+                      <Text>{comment.commentBody}</Text>
                     </View>
-                    {authState.username === comment.username && (
-                      <TouchableOpacity
-                        onPress={() => deleteComment(comment.id)}
-                        className="p-2 bg-gray-200">
-                        <Trash2
-                          color="black"
-                          size={16}
-                        />
-                      </TouchableOpacity>
-                    )}
                   </View>
+
+                  {authState.username === comment.username && (
+                    <TouchableOpacity
+                      onPress={() => deleteComment(comment.id)}
+                      className="p-2 absolute top-0 right-0">
+                      <Trash2
+                        color="gray"
+                        size={12}
+                      />
+                    </TouchableOpacity>
+                  )}
                 </View>
               );
             })}
@@ -248,7 +295,7 @@ function Post() {
             value={newComment}
             onChangeText={(text) => setNewComment(text)}
             maxLength={maxCharLimit}
-            className="p-2 flex-grow border border-gray-200 bg-white rounded-lg"
+            className="p-2 flex-1 border border-gray-200 bg-white rounded-lg"
           />
           <TouchableOpacity
             onPress={addComment}

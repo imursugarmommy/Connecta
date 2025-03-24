@@ -24,6 +24,24 @@ const PostContent = memo(({ post }: { post: Post }) => {
     });
   }, []);
 
+  const calcTime = () => {
+    const postDate = new Date(post.createdAt);
+    const currentDate = new Date();
+    const time = Math.floor(
+      (currentDate.getTime() - postDate.getTime()) / 1000
+    );
+
+    if (time < 60) return "now";
+    if (time < 3600) return `${Math.floor(time / 60)}min`;
+    if (time < 86400) return `${Math.floor(time / 3600)}h`;
+    if (time < 604800) return `${Math.floor(time / 86400)}d`;
+    if (time < 2628000) return `${Math.floor(time / 604800)}w`;
+    if (time < 31536000) return `${Math.floor(time / 2628000)}m`;
+    if (time >= 31536000) return `${Math.floor(time / 31536000)}y`;
+
+    return time;
+  };
+
   return (
     <View>
       <View className="w-full flex-row justify-between items-center">
@@ -48,16 +66,32 @@ const PostContent = memo(({ post }: { post: Post }) => {
               </Text>
             </View>
           )}
-          {user ? (
-            <Text className="text-xl text-black">{user.name}</Text>
-          ) : (
-            <View className="w-28 py-2.5 rounded-full bg-gray-200" />
-          )}
-          {user ? (
-            <Text className="text-sm text-gray-500">@{user.username}</Text>
-          ) : (
-            <View className="w-20 py-2 rounded-full bg-gray-200" />
-          )}
+          <View>
+            <View className="flex-row items-center gap-x-2 text-sm">
+              <View>
+                {user ? (
+                  <Text className="text-lg text-[#FFD343] font-bold">
+                    {user.name}
+                  </Text>
+                ) : (
+                  <View className="w-28 py-2.5 rounded-full bg-gray-200" />
+                )}
+                {user ? (
+                  <Text className="text-xs text-gray-300 leading-3">
+                    @{user.username}
+                  </Text>
+                ) : (
+                  <View className="w-20 py-2 rounded-full bg-gray-200" />
+                )}
+              </View>
+
+              <View className="h-1 w-1 rounded-full bg-gray-300" />
+
+              <View>
+                <Text className="text-xs text-gray-300">{calcTime()}</Text>
+              </View>
+            </View>
+          </View>
         </TouchableOpacity>
 
         {authState.id === post.UserId && (

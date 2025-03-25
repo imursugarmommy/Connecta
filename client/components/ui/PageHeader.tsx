@@ -50,8 +50,10 @@ const PageHeader = () => {
         )}
 
         <View className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-3 bg-white">
-          {/* TODO: change to app icon */}
-          <Image className="w-12 h-12" />
+          <Image
+            className="w-12 h-12 rounded-full"
+            source={require("../../assets/images/connecta.png")}
+          />
         </View>
 
         {/* TODO: add functionality */}

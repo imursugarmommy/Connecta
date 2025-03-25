@@ -1,5 +1,6 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -9,10 +10,11 @@ import {
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import axios from "axios";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import PostTemplate from "@/components/PostTemplate";
 import { Post } from "@/types/Post";
-import { Search } from "lucide-react-native";
+import { Search, X } from "lucide-react-native";
+import { useAuth } from "../helpers/AuthContext";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -20,26 +22,7 @@ export default function SearchScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [search, setSearch] = useState<string>("");
   const colorScheme = useColorScheme();
-
-  // * nice idea but when parent header is changed every tabs header changes
-  // ? maybe there is a good solution, havent found yet
-  // const navigation = useNavigation();
-
-  // useLayoutEffect(() => {
-  //   navigation.getParent()?.setOptions({
-  //     headerShown: true,
-  //     headerLargeTitle: true,
-  //     headerTitle: "Suche",
-  //     headerSearchBarOptions: {
-  //       placeholder: "Search",
-  //       autoCapitalize: "none",
-  //       onChangeText: (event: any) => {
-  //         const searchText = event.nativeEvent.text;
-  //         updateSearch(searchText);
-  //       },
-  //     },
-  //   });
-  // }, [navigation]);
+  const { authState } = useAuth();
 
   useEffect(() => {
     axios
@@ -65,9 +48,32 @@ export default function SearchScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View className="m-2 p-4 w-full dark:text-white rouned-xl">
-        <View className="flex-row items-center bg-gray-200 dark:bg-gray-800 rounded-xl px-3 h-10">
+    <SafeAreaView style={styles.container}>
+      <View className="m-2 p-4 w-full dark:text-white rouned-xl flex-row">
+        {authState.state && (
+          <View className="flex-row items-center gap-x-2 mr-2">
+            {authState.profileImage ? (
+              <Image
+                source={{
+                  uri: `http://${serverip}:6969/images/users/${authState.profileImage}`,
+                }}
+                className="w-10 h-10 rounded-full object-cover bg-gray-200"
+              />
+            ) : (
+              <View
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{
+                  backgroundColor: `hsl(${authState.id}, 40%, 40%)`,
+                }}>
+                <Text className="text-white text-xl">
+                  {authState.name?.split("")[0].toUpperCase() || ""}
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        <View className="flex-row flex-grow items-center bg-gray-200 dark:bg-gray-800 rounded-xl px-3 h-10">
           <Search
             strokeWidth={1.6}
             size={20}
@@ -76,12 +82,24 @@ export default function SearchScreen() {
           />
 
           <TextInput
-            className="dark:text-white h-full p-0 w-full text-base"
+            className="dark:text-white h-full flex-1 p-0 text-base"
             placeholder="Nach was suchst du diesmal?"
             placeholderTextColor={colorScheme === "dark" ? "white" : "gray"}
             onChangeText={updateSearch}
             value={search}
           />
+
+          {search && (
+            <TouchableOpacity
+              onPress={() => updateSearch("")}
+              className="p-1 rounded-full"
+              style={{ backgroundColor: "gray" }}>
+              <X
+                color={"#e5e7eb"}
+                size={10}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
       <ScrollView className="w-full h-full p-4">
@@ -105,7 +123,7 @@ export default function SearchScreen() {
           ))
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -113,5 +131,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "#fff",
   },
 });

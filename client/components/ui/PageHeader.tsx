@@ -49,30 +49,33 @@ const PageHeader = () => {
           </View>
         )}
 
-        <View className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-3 bg-white">
-          <Image
-            className="w-12 h-12 rounded-full"
-            source={require("../../assets/images/connecta.png")}
-          />
-        </View>
+        <View className="flex-row gap-x-2 items-center">
+          {/* TODO: add functionality */}
+          {/* {authState.state && (
+            <View>
+              <Bell
+                color={"#FFD343"}
+                fill={"#FFD343"}
+                size={24}
+              />
+            </View>
+          )} */}
 
-        {/* TODO: add functionality */}
-        {/* {authState.state && (
-          <View>
-            <Bell
-              color={"#FFD343"}
-              fill={"#FFD343"}
-              size={24}
+          {!authState.state && (
+            <TouchableOpacity
+              className="p-2 px-4 rounded-full border border-gray-200"
+              onPress={() => router.push("/auth/login")}>
+              <Text>Sign in</Text>
+            </TouchableOpacity>
+          )}
+
+          <View className="">
+            <Image
+              className="w-12 h-12 rounded-full"
+              source={require("../../assets/images/connecta.png")}
             />
           </View>
-        )} */}
-        {!authState.state && (
-          <TouchableOpacity
-            className="p-2 px-4 rounded-full border border-gray-200"
-            onPress={() => router.push("/auth/login")}>
-            <Text>Sign in</Text>
-          </TouchableOpacity>
-        )}
+        </View>
       </View>
     </SafeAreaView>
   );

@@ -23,8 +23,8 @@ const MessageHeader = ({ user }: { user: User }) => {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          // onPress={router.push("/user/${user.username}s")} TODO: route to user profile
-          className="flex-row items-center justify-between flex-grow gap-x-2">
+          className="flex-row items-center justify-between flex-grow gap-x-2"
+          onPress={() => router.push(`/user/${user.username}` as any)}>
           <View className="flex-row items-center gap-x-2">
             <Image
               source={{
@@ -32,7 +32,7 @@ const MessageHeader = ({ user }: { user: User }) => {
               }}
               className="w-9 h-9 rounded-full"
             />
-            <Text className="text-lg font-bold">{user.username}</Text>
+            <Text className="text-lg font-bold">{user.name}</Text>
           </View>
           <View className="p-2">
             <MoveRight

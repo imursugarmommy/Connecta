@@ -30,12 +30,6 @@ export default function TabLayout() {
             title: "Home",
             header: PageHeader,
             tabBarIcon: ({ color }) => <Home color={color} />,
-            header: () => (
-              <Headers
-                title="Home"
-                style={{ paddingTop: 50 }}
-              />
-            ),
           }}
         />
         <Tabs.Screen

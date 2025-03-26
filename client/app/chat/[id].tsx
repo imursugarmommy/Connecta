@@ -56,7 +56,7 @@ const Messages = () => {
       }
 
       const chatUserId =
-        authState.id === Number(chat.userId) ? chat.userId : chat.userId2;
+        authState.id !== Number(chat.userId) ? chat.userId : chat.userId2;
 
       const chatUserResponse = await axios.get(
         `http://${serverip}:6969/users/byid/${chatUserId}`

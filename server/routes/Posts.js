@@ -6,6 +6,7 @@ const { validateToken } = require("../middleware/AuthMiddleware");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
+const { Op } = require("sequelize");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

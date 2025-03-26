@@ -80,7 +80,7 @@ function RootLayoutNav() {
               <Stack.Screen
                 name="chat/[id]"
                 options={{
-                  title: "Chat",
+                  headerShown: false,
                   headerBackButtonDisplayMode: "minimal",
                 }}
               />

@@ -5,6 +5,7 @@ import {
   TextInput,
   FlatList,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { SendHorizonal } from "lucide-react-native";
@@ -12,6 +13,8 @@ import axios from "axios";
 import { useAuth } from "../helpers/AuthContext";
 import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MessageHeader from "../../components/ui/MessageHeader";
+import { User } from "@/types/User";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -27,6 +30,8 @@ interface Message {
 const Messages = () => {
   const { authState } = useAuth();
   const { id: chatId } = useLocalSearchParams();
+
+  const [chatUser, setChatUser] = useState<User>();
 
   const [messages, setMessages] = useState([
     { id: "1", text: "Hey! How's it going?", sender: "other" },
@@ -49,6 +54,15 @@ const Messages = () => {
         router.push("/");
         return;
       }
+
+      const chatUserId =
+        authState.id === Number(chat.userId) ? chat.userId : chat.userId2;
+
+      const chatUserResponse = await axios.get(
+        `http://${serverip}:6969/users/byid/${chatUserId}`
+      );
+
+      setChatUser(chatUserResponse.data);
     }
 
     checkChatAuth();
@@ -98,6 +112,16 @@ const Messages = () => {
     setInput("");
   };
 
+  if (!chatUser || !messages)
+    return (
+      <View className="flex-1 justify-between items-center">
+        <ActivityIndicator
+          size="small"
+          color="#0000ff"
+        />
+      </View>
+    );
+
   return (
     <View
       style={{
@@ -105,6 +129,8 @@ const Messages = () => {
         backgroundColor: "white",
         position: "relative",
       }}>
+      <MessageHeader user={chatUser} />
+
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}

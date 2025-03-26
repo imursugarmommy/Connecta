@@ -20,13 +20,40 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get("/", async (req, res) => {
-  const postList = await Posts.findAll({
-    include: [Likes, Comments],
-    limit: 50,
-    order: [["updatedAt", "DESC"]],
-  });
-
-  res.json(postList);
+  const searchparam = req.query.searchparam;
+  try {
+    let posts;
+    if (searchparam) {
+      posts = await Posts.findAll({
+        where: {
+          [Op.or]: [
+            {
+              content: {
+                [Op.like]: `%${searchparam}%`,
+              },
+            },
+            {
+              title: {
+                [Op.like]: `%${searchparam}%`,
+              },
+            },
+          ],
+        },
+        include: [Likes, Comments],
+        limit: 50,
+        order: [["updatedAt", "DESC"]],
+      });
+    } else {
+      posts = await Posts.findAll({
+        include: [Likes, Comments],
+        limit: 50,
+        order: [["updatedAt", "DESC"]],
+      });
+    }
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.get("/byid/:id", async (req, res) => {

@@ -1,34 +1,136 @@
-import { StyleSheet } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
+import { Text, View } from "@/components/Themed";
+import axios from "axios";
+import { router } from "expo-router";
+import PostTemplate from "@/components/PostTemplate";
+import { Post } from "@/types/Post";
+import { Search, X } from "lucide-react-native";
+import { useAuth } from "../helpers/AuthContext";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 export default function SearchScreen() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [search, setSearch] = useState<string>("");
+  const colorScheme = useColorScheme();
+  const { authState } = useAuth();
+
+  useEffect(() => {
+    axios
+      .get(`http://${serverip}:6969/posts`)
+      .then((response) => {
+        setPosts(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const updateSearch = (search: string) => {
+    setSearch(search);
+    axios
+      .get(`http://${serverip}:6969/posts`, { params: { searchparam: search } })
+      .then((response) => {
+        setPosts(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={{height: 10}} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text style={styles.headline}>Suche</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgb(255, 255, 255)" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View className="m-2 p-4 w-full dark:text-white rouned-xl flex-row">
+        {authState.state && (
+          <View className="flex-row items-center gap-x-2 mr-2">
+            {authState.profileImage ? (
+              <Image
+                source={{
+                  uri: `http://${serverip}:6969/images/users/${authState.profileImage}`,
+                }}
+                className="w-10 h-10 rounded-full object-cover bg-gray-200"
+              />
+            ) : (
+              <View
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{
+                  backgroundColor: `hsl(${authState.id}, 40%, 40%)`,
+                }}>
+                <Text className="text-white text-xl">
+                  {authState.name?.split("")[0].toUpperCase() || ""}
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        <View className="flex-row flex-grow items-center bg-gray-200 dark:bg-gray-800 rounded-xl px-3 h-10">
+          <Search
+            strokeWidth={1.6}
+            size={20}
+            color={colorScheme === "dark" ? "white" : "gray"}
+            style={{ marginRight: 10 }}
+          />
+
+          <TextInput
+            className="dark:text-white h-full flex-1 p-0 text-base"
+            placeholder="Nach was suchst du diesmal?"
+            placeholderTextColor={colorScheme === "dark" ? "white" : "gray"}
+            onChangeText={updateSearch}
+            value={search}
+          />
+
+          {search && (
+            <TouchableOpacity
+              onPress={() => updateSearch("")}
+              className="p-1 rounded-full"
+              style={{ backgroundColor: "gray" }}>
+              <X
+                color={"#e5e7eb"}
+                size={10}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+      <ScrollView className="w-full h-full p-4">
+        {posts.length === 0 ? (
+          <View className="w-full bg-red-200 mb-6 rounded-md overflow-hidden">
+            <View className="w-full p-3 justify-center items-center flex">
+              <Text className="text-xl text-black dark:text-white">
+                {search === ""
+                  ? "Keine Posts gefunden"
+                  : `Keine Posts mit dem Content "${search}" gefunden`}
+              </Text>
+            </View>
+          </View>
+        ) : (
+          posts.map((post) => (
+            <TouchableOpacity
+              onPress={() => router.push(`/post/${post.id}` as any)}
+              key={post.id}>
+              <PostTemplate post={post} />
+            </TouchableOpacity>
+          ))
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  headline: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  }
 });

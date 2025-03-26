@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../helpers/AuthContext";
+import { User } from "@/types/User";
 
 interface Chat {
   id: number;
@@ -13,18 +14,12 @@ interface Chat {
   updatedAt: string;
 }
 
-interface Friend {
-  id: number;
-  username: string;
-  profileImage: string;
-}
-
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 const ChatList = () => {
   const { authState } = useAuth();
   const [chats, setChats] = useState<Chat[]>([]);
-  const [friends, setFriends] = useState<{ [key: number]: Friend }>({});
+  const [friends, setFriends] = useState<{ [key: number]: User }>({});
 
   useEffect(() => {
     async function fetchData() {
@@ -96,8 +91,7 @@ const ChatList = () => {
             </View>
           )}
           <Text className="text-[#FFD343] text-lg font-bold">
-            {/* TODO: change to name when merged */}
-            {friend?.username}
+            {friend?.name}
           </Text>
         </View>
       </TouchableOpacity>

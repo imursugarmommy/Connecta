@@ -1,34 +1,30 @@
-import { StyleSheet } from 'react-native';
+import React, { useEffect } from "react";
+import { View } from "react-native";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { useAuth } from "../helpers/AuthContext";
+import { router } from "expo-router";
 
-export default function ProfileScreen() {
+import ProfilePage from "@/components/ui/ProfilePage";
+
+function Profile() {
+  const { authState } = useAuth();
+
+  useEffect(() => {
+    if (!authState.state) {
+      router.push("/auth/login");
+    }
+  }, [authState.state]);
+
+  if (!authState.state) {
+    // Optionally, render a loading or placeholder view while redirecting
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={{height: 10}} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text style={styles.headline}>Profil</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgb(255, 255, 255)" />
+    <View className="flex-1">
+      <ProfilePage user={authState} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  headline: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  }
-});
+export default Profile;

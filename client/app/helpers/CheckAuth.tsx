@@ -39,6 +39,15 @@ export default function CheckAuth({ children }: { children: React.ReactNode }) {
               email: "",
             });
           } else {
+            const profileRes = await axios.get(
+              `http://${process.env.EXPO_PUBLIC_SERVERIP}:6969/users/byid/${res.data.id}`
+            );
+
+            await AsyncStorage.setItem(
+              "profileImage",
+              profileRes.data.profileImage || ""
+            );
+
             setAuthState({
               id: res.data.id,
               profileImage,

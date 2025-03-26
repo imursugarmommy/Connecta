@@ -84,6 +84,12 @@ function RootLayoutNav() {
                   headerBackButtonDisplayMode: "minimal",
                 }}
               />
+              <Stack.Screen
+                name="user/[id]"
+                options={{
+                  headerShown: false,
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </PostProvider>

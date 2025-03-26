@@ -76,8 +76,6 @@ router.post(
     const user = req.user;
     let file = req.file;
 
-    console.log(req.user);
-
     if (file) file = req.file.filename;
     else file = null;
 
@@ -89,6 +87,29 @@ router.post(
     res.json(newPost);
   }
 );
+
+router.get("/byuserid/:id", async (req, res) => {
+  const id = req.params.id;
+  const postList = await Posts.findAll({
+    where: { UserId: id },
+    include: [Likes],
+    order: [["updatedAt", "DESC"]],
+  });
+
+  res.json(postList);
+});
+
+router.post("/", validateToken, async (req, res) => {
+  const post = req.body;
+  const user = req.user;
+
+  post.username = user.username;
+  post.UserId = user.id;
+
+  await Posts.create(post);
+
+  res.json(post);
+});
 
 router.delete("/:postId", validateToken, async (req, res) => {
   const postId = req.params.postId;

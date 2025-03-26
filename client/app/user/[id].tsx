@@ -1,14 +1,54 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { useLocalSearchParams } from "expo-router";
+import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+
+import ProfilePage from "@/components/ui/ProfilePage";
+import { router, useLocalSearchParams } from "expo-router";
+import axios from "axios";
+import { User } from "@/types/User";
+import { ChevronLeft, Search } from "lucide-react-native";
+
+const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 const UserPage = () => {
-  const { id } = useLocalSearchParams();
+  const { id: username } = useLocalSearchParams();
+
+  const [user, setUser] = useState<User>();
+
+  useEffect(() => {
+    axios.get(`http://${serverip}:6969/users/${username}`).then((res) => {
+      setUser(res.data[0]);
+    });
+  }, []);
+
+  if (!user)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-2xl text-red-500">User Not found!</Text>
+      </View>
+    );
 
   return (
-    <View className="flex-1 items-center bg-white p-4">
-      <Text>{id}</Text>
-    </View>
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="px-6 justify-between items-center flex-row">
+        <TouchableOpacity onPress={() => router.back()}>
+          <ChevronLeft
+            color={"black"}
+            size={28}
+          />
+        </TouchableOpacity>
+
+        {/* 
+        TODO: Implement search functionality.
+
+        <Search
+          color={"black"}
+          size={24}
+        /> 
+        */}
+      </View>
+
+      <ProfilePage user={user} />
+    </SafeAreaView>
   );
 };
 

@@ -5,4 +5,6 @@ export interface User {
   profileImage: string;
   email: string;
   password: string;
+  createdAt: string;
+  updatedAt: string;
 }

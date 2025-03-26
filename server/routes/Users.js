@@ -87,6 +87,20 @@ router.post("/login", async (req, res) => {
   });
 });
 
+router.get("/byid/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const user = await Users.findOne({
+    where: {
+      id,
+    },
+  });
+
+  if (!user) return res.json({ error: "User does not exist" });
+
+  res.json(user);
+});
+
 router.get("/auth", validateToken, async (req, res) => {
   res.json(req.user);
 });

@@ -5,7 +5,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
@@ -72,7 +72,17 @@ function RootLayoutNav() {
               />
               <Stack.Screen
                 name="post/[id]"
-                options={{ title: "Post Overview", headerBackTitle: "Back" }}
+                options={{
+                  title: "Post Overview",
+                  headerBackTitle: "Back",
+                }}
+              />
+              <Stack.Screen
+                name="chat/[id]"
+                options={{
+                  headerShown: false,
+                  headerBackButtonDisplayMode: "minimal",
+                }}
               />
             </Stack>
           </GestureHandlerRootView>

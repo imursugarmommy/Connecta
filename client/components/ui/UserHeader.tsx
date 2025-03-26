@@ -92,6 +92,8 @@ const UserHeader = ({
     await AsyncStorage.setItem("profileImage", response.data.profileImage);
   }
 
+  // TODO: Implement shareProfile and editProfile
+
   function shareProfile() {}
 
   function editProfile() {}
@@ -163,9 +165,9 @@ const UserHeader = ({
       <View className="w-full flex-row justify-between gap-x-2">
         {isYourProfile && (
           <TouchableOpacity
-            className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
+            className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-2"
             onPress={editProfile}>
-            <Text className="text-lg text-black dark:text-white mr-2">
+            <Text className="text-md text-black dark:text-white mr-2">
               Edit Profile
             </Text>
             <Pencil
@@ -177,7 +179,7 @@ const UserHeader = ({
 
         {!isYourProfile && (
           <TouchableOpacity
-            className="flex-row flex-1 justify-center items-center bg-[#FFD343] rounded-lg py-1"
+            className="flex-row flex-1 justify-center items-center bg-[#FFD343] rounded-lg py-2"
             style={{
               backgroundColor: following ? "white" : "#FFD343",
               borderWidth: following ? 1 : 0,
@@ -185,7 +187,7 @@ const UserHeader = ({
             }}
             onPress={handleFollow}>
             <Text
-              className="text-lg mr-2"
+              className="text-md mr-2"
               style={{ color: following ? "black" : "white" }}>
               {following ? "Following" : "Follow"}
             </Text>
@@ -193,9 +195,9 @@ const UserHeader = ({
         )}
 
         <TouchableOpacity
-          className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-1"
+          className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-2"
           onPress={shareProfile}>
-          <Text className="text-lg text-black dark:text-white mr-2">
+          <Text className="text-md text-black dark:text-white mr-2">
             Share Profile
           </Text>
           <Share

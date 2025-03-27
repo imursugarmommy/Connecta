@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
     AsyncStorage.removeItem("accessToken");
 
-    router.push("/auth/login");
+    router.push("/");
   };
 
   return (

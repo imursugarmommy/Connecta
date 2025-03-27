@@ -43,8 +43,10 @@ const ChatList = () => {
       setChats(chatResponse.data);
 
       const friendIds = chatResponse.data.map((chat: Chat) =>
-        chat.userId === authState.id ? chat.userId2 : chat.userId
+        chat.userId !== authState.id ? chat.userId2 : chat.userId
       );
+
+      console.log(friendIds);
 
       const friendResponses = await Promise.all(
         friendIds.map((id: number) =>
@@ -64,7 +66,7 @@ const ChatList = () => {
   }, [authState.id]);
 
   const renderItems = ({ item }: { item: Chat }) => {
-    const friendId = item.userId === authState.id ? item.userId2 : item.userId;
+    const friendId = item.userId !== authState.id ? item.userId2 : item.userId;
     const friend = friends[friendId];
 
     return (

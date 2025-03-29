@@ -90,6 +90,12 @@ function RootLayoutNav() {
                   headerShown: false,
                 }}
               />
+              <Stack.Screen
+                name="menu"
+                options={{
+                  headerShown: false,
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </PostProvider>

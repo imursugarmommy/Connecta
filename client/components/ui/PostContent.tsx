@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import { Trash2 } from "lucide-react-native";
 import { Post } from "@/types/Post";
 import RenderHTML from "react-native-render-html";
+import {Appearance} from 'react-native';
 
 LogBox.ignoreLogs([
   "MemoizedTNodeRenderer: Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead.",
@@ -22,6 +23,8 @@ LogBox.ignoreLogs([
 ]);
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
+const colorScheme = Appearance.getColorScheme();
 
 const PostContent = memo(({ post }: { post: Post }) => {
   const { authState } = useAuth();
@@ -135,7 +138,7 @@ const PostContent = memo(({ post }: { post: Post }) => {
       </View>
       <View className="w-full py-2">
         <View className={"flex " + (post.postImage && "gap-y-2")}>
-          <Text className="text-lg font-bold">{post.title}</Text>
+          <Text className="text-lg dark:text-white font-bold">{post.title}</Text>
           {post.postImage && (
             <Image
               source={{
@@ -144,11 +147,13 @@ const PostContent = memo(({ post }: { post: Post }) => {
               className="w-full h-52 object-cover bg-black"
             />
           )}
-
-          <RenderHTML
-            contentWidth={500}
-            source={{ html: post.content }}
-          />
+            <RenderHTML
+              contentWidth={500}
+              source={{ html: post.content }}
+              baseStyle={{
+                color: colorScheme === "dark" ? "#FEFEFE" : "#050505",
+              }}
+            />
         </View>
       </View>
     </View>

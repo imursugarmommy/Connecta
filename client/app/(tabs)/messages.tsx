@@ -106,7 +106,7 @@ const ChatList = () => {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black dark:text-white">
       <FlatList
         data={chats}
         keyExtractor={(item) => item.id.toString()}

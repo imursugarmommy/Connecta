@@ -12,7 +12,7 @@ const PageHeader = () => {
   const { authState } = useAuth();
 
   return (
-    <SafeAreaView className="bg-white border-b border-gray-200 shadow-sm">
+    <SafeAreaView className="bg-white dark:bg-black border-b border-gray-200 shadow-sm">
       <View className="p-4 flex-row items-center justify-between relative">
         {authState.state ? (
           <View className="flex-row items-center gap-x-2">
@@ -35,7 +35,7 @@ const PageHeader = () => {
               </View>
             )}
 
-            <Text className="text-xl font-bold">{authState.name}</Text>
+            <Text className="text-xl dark:text-white font-bold">{authState.name}</Text>
           </View>
         ) : (
           <View className="flex-row gap-x-2 items-center">

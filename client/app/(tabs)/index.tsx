@@ -23,7 +23,7 @@ import BottomSheetComponent from "@/components/ui/BottomSheetComponent";
 
 import { LogBox } from "react-native";
 LogBox.ignoreLogs([
-  "TNodeChildrenRenderer: Support for defaultProps will be removed", // Suppress this warning
+  "TNodeChildrenRenderer: Support for defaultProps will be removed",
 ]);
 
 export default function HomeScreen() {

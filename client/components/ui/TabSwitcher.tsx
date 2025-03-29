@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import {Appearance} from 'react-native';
 import {
   View,
   Text,
@@ -7,6 +8,8 @@ import {
   Animated,
   LayoutChangeEvent,
 } from "react-native";
+
+const colorScheme = Appearance.getColorScheme();
 
 const TabSwitcher = ({
   activeTab,
@@ -39,9 +42,9 @@ const TabSwitcher = ({
 
   return (
     <View onLayout={handleLayout}>
-      <View className="flex-row bg-gray-100 rounded-lg">
+      <View className="flex-row bg-gray-100 dark:bg-black rounded-lg">
         <Animated.View
-          className="absolute h-full bg-white rounded-lg border border-gray-200"
+          className="absolute h-full bg-white dark:bg-black rounded-lg border border-gray-200"
           style={[{ transform: [{ translateX }], width: tabWidth }]}
         />
         <TouchableOpacity
@@ -68,10 +71,10 @@ const TabSwitcher = ({
 const styles = StyleSheet.create({
   text: {
     fontSize: 14,
-    color: "#999",
+    color: colorScheme === "dark" ? "#e5e7eb" : "#000",
   },
   activeText: {
-    color: "#000",
+    color: colorScheme === "dark" ? "#FFD343" : "#FFD343",
     fontWeight: "bold",
   },
 });

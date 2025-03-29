@@ -15,7 +15,7 @@ function Profile() {
   }
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 dark:bg-black">
       <ProfilePage user={authState} />
     </View>
   );

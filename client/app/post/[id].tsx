@@ -221,7 +221,7 @@ function Post() {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
       <Animated.View
         className="absolute top-0 left-0 w-full h-full z-10"
         style={animatedStyle}

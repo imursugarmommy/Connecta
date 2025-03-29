@@ -1,4 +1,11 @@
-import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+  LogBox,
+} from "react-native";
 import React, { useEffect, useState, memo } from "react";
 import { User } from "@/types/User";
 import axios from "axios";
@@ -8,6 +15,11 @@ import { router } from "expo-router";
 import { Trash2 } from "lucide-react-native";
 import { Post } from "@/types/Post";
 import RenderHTML from "react-native-render-html";
+
+LogBox.ignoreLogs([
+  "MemoizedTNodeRenderer: Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead.",
+  "TRenderEngineProvider: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+]);
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 

@@ -152,9 +152,14 @@ const UserHeader = ({
         </View>
 
         <View className="flex-grow flex-wrap">
-          <Text className="text-black dark:text-white text-3xl font-bold">
-            @{user.username}
-          </Text>
+          <View className="flex-row items-center">
+            <Text className="text-black dark:text-white text-xl font-bold mr-2">
+              {user.name}
+            </Text>
+            <Text className="text-gray-400 dark:text-white text-md">
+              @{user.username}
+            </Text>
+          </View>
 
           <UserStats user={user} />
         </View>

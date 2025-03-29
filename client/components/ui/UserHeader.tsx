@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Sharing from "expo-sharing";
 
 import UserStats from "./UserStats";
+import { useAuth } from "@/app/helpers/AuthContext";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
@@ -21,6 +22,10 @@ const UserHeader = ({
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [following, setFollowing] = useState<boolean>(true);
 
+  const { authState } = useAuth();
+
+  const isSignedIn = authState.state;
+
   useEffect(() => {
     (async () => {
       const profileImage = await AsyncStorage.getItem("profileImage");
@@ -30,6 +35,8 @@ const UserHeader = ({
     })();
 
     (async () => {
+      if (!isSignedIn) return;
+
       const following = await axios.get(
         `http://${serverip}:6969/follows/${user.id}`,
         {
@@ -180,7 +187,7 @@ const UserHeader = ({
           </TouchableOpacity>
         )}
 
-        {!isYourProfile && (
+        {!isYourProfile && isSignedIn && (
           <TouchableOpacity
             className="flex-row flex-1 justify-center items-center bg-[#FFD343] rounded-lg py-2"
             style={{

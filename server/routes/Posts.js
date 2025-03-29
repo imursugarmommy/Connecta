@@ -41,13 +41,11 @@ router.get("/", async (req, res) => {
           ],
         },
         include: [Likes, Comments],
-        limit: 50,
         order: [["updatedAt", "DESC"]],
       });
     } else {
       posts = await Posts.findAll({
         include: [Likes, Comments],
-        limit: 50,
         order: [["updatedAt", "DESC"]],
       });
     }

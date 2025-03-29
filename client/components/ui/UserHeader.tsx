@@ -5,6 +5,7 @@ import { User } from "@/types/User";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Sharing from "expo-sharing";
 
 import UserStats from "./UserStats";
 
@@ -92,10 +93,7 @@ const UserHeader = ({
     await AsyncStorage.setItem("profileImage", response.data.profileImage);
   }
 
-  // TODO: Implement shareProfile and editProfile
-
-  function shareProfile() {}
-
+  // TODO: Implement editProfile
   function editProfile() {}
 
   async function handleFollow() {
@@ -196,7 +194,11 @@ const UserHeader = ({
 
         <TouchableOpacity
           className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-2"
-          onPress={shareProfile}>
+          onPress={async () =>
+            await Sharing.shareAsync(
+              `http://${serverip}:6969/posts/` + user.username
+            )
+          }>
           <Text className="text-md text-black dark:text-white mr-2">
             Share Profile
           </Text>

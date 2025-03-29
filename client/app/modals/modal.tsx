@@ -88,12 +88,24 @@ const Modal = () => {
   return (
     <View className="flex-1 bg-white flex justify-between">
       <View className="flex-row m-4">
-        <Image
-          source={{
-            uri: `http://${serverip}:6969/images/users/${authState.profileImage}`,
-          }}
-          className="w-8 h-8 rounded-full object-contain bg-gray-200"
-        />
+        {authState.profileImage ? (
+          <Image
+            source={{
+              uri: `http://${serverip}:6969/images/users/${authState.profileImage}`,
+            }}
+            className="w-8 h-8 rounded-full object-contain bg-gray-200"
+          />
+        ) : (
+          <View
+            className="w-8 h-8 rounded-full flex items-center justify-center"
+            style={{
+              backgroundColor: `hsl(${authState.id}, 40%, 40%)`,
+            }}>
+            <Text className="text-white text-xl">
+              {authState.username.split("")[0].toUpperCase() || ""}
+            </Text>
+          </View>
+        )}
         <View className="flex-1">
           <TextInput
             ref={textInputRef}

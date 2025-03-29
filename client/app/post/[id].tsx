@@ -142,6 +142,8 @@ function Post() {
     return <Text>Loading...</Text>;
 
   const addComment = async () => {
+    if (!newComment) return;
+
     axios
       .post(
         `http://${serverip}:6969/comments`,
@@ -287,8 +289,8 @@ function Post() {
       <KeyboardAvoidingView
         behavior="position"
         keyboardVerticalOffset={70}
-        className="w-full bg-black absolute bottom-0">
-        <View className="flex-row flex-grow items-center justify-between px-4 py-2 pb-10 gap-x-4 bg-gray-500">
+        className="w-full absolute bottom-0">
+        <View className="flex-row flex-grow items-center justify-between px-4 py-2 pb-10 gap-x-4 bg-gray-300">
           <TextInput
             ref={inputRef}
             placeholder="What's your opinion?"

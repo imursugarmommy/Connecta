@@ -148,7 +148,6 @@ const Messages = () => {
         )}
       />
       <KeyboardAvoidingView
-        keyboardVerticalOffset={85}
         behavior={"position"}
         className="absolute bottom-0 w-full">
         <View className="flex-row w-full justify-between items-center p-2 px-3 pb-5 bg-[#D0D3D9]">

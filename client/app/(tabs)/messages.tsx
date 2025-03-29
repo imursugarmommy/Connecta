@@ -5,6 +5,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../helpers/AuthContext";
 import { User } from "@/types/User";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 interface Chat {
   id: number;
@@ -20,6 +21,12 @@ const ChatList = () => {
   const { authState } = useAuth();
   const [chats, setChats] = useState<Chat[]>([]);
   const [friends, setFriends] = useState<{ [key: number]: User }>({});
+
+  function getFriendId(chat: Chat) {
+    if (authState.id === Number(chat.userId)) return Number(chat.userId2);
+    else if (authState.id === Number(chat.userId2)) return Number(chat.userId);
+    return 0;
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -43,10 +50,8 @@ const ChatList = () => {
       setChats(chatResponse.data);
 
       const friendIds = chatResponse.data.map((chat: Chat) =>
-        chat.userId !== authState.id ? chat.userId2 : chat.userId
+        getFriendId(chat)
       );
-
-      console.log(friendIds);
 
       const friendResponses = await Promise.all(
         friendIds.map((id: number) =>
@@ -66,7 +71,7 @@ const ChatList = () => {
   }, [authState.id]);
 
   const renderItems = ({ item }: { item: Chat }) => {
-    const friendId = item.userId !== authState.id ? item.userId2 : item.userId;
+    const friendId = getFriendId(item);
     const friend = friends[friendId];
 
     return (

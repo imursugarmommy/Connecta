@@ -163,7 +163,7 @@ const PostContent = memo(({ post }: { post: Post }) => {
                 source={{
                   uri: `http://${serverip}:6969/images/posts/${post.postImage}`,
                 }}
-                className="w-full h-52 object-cover bg-black"
+                className="w-full h-52 object-cover bg-black mb-2"
               />
             </TouchableOpacity>
           )}

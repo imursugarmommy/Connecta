@@ -36,6 +36,12 @@ const login = () => {
 
     checkForUsername(data.username, "username and password");
 
+    const namePattern = /^[a-zA-Z\s]+$/;
+    if (!namePattern.test(data.name))
+      return setErrorMessage(
+        "Name is not valid, it must start with a letter and cannot have special characters or numbers"
+      );
+
     try {
       const createUserResponse = await axios.post(
         `http://${serverip}:6969/users/`,
@@ -75,12 +81,19 @@ const login = () => {
 
   const checkForUsername = (username: string, name: string) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    // username pattern cannot start with special characters or numbers and cannot have spaces
+    const usernamePattern = /^[a-zA-Z][a-zA-Z0-9._-]*$/;
 
     setErrorMessage(`Checking ${name} ...`);
 
     setTimeout(() => {
       if (name === "Email" && !emailPattern.test(username))
         return setErrorMessage("Email is not valid");
+
+      if (name === "Username" && !usernamePattern.test(username))
+        return setErrorMessage(
+          "Username is not valid, it must start with a letter and cannot have spaces"
+        );
 
       axios.get(`http://${serverip}:6969/users/${username}`).then((res) => {
         if (res.data.error) return setErrorMessage("");

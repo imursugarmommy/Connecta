@@ -1,24 +1,26 @@
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity, Appearance } from "react-native";
 import React from "react";
 import { router } from "expo-router";
 import { ChevronLeft, LogOut } from "lucide-react-native";
 import { useAuth } from "./helpers/AuthContext";
 
+const colorScheme = Appearance.getColorScheme();
+
 const menu = () => {
   const { logout } = useAuth();
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="px-6 pb-4 justify-between items-center flex-row border-b border-[#E5E5E5]">
+    <SafeAreaView className="flex-1 bg-white dark:bg-black">
+      <View className="px-6 p-4 pb-4 justify-between items-center flex-row border-b border-[#E5E5E5]">
         <TouchableOpacity onPress={() => router.back()}>
           <ChevronLeft
-            color={"black"}
+            color={colorScheme === "dark" ? "white" : "black"}
             size={28}
           />
         </TouchableOpacity>
 
         <View className="flex-grow justify-center items-center">
-          <Text>Settings and Activity</Text>
+          <Text className="dark:text-white">Settings and Activity</Text>
         </View>
 
         {/* placeholder for the right placement of header */}

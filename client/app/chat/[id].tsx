@@ -6,6 +6,7 @@ import {
   FlatList,
   KeyboardAvoidingView,
   ActivityIndicator,
+  Appearance,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { SendHorizonal } from "lucide-react-native";
@@ -17,6 +18,7 @@ import MessageHeader from "../../components/ui/MessageHeader";
 import { User } from "@/types/User";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+const  colorScheme = Appearance.getColorScheme();
 
 interface Message {
   id: number;
@@ -124,11 +126,7 @@ const Messages = () => {
 
   return (
     <View
-      style={{
-        flex: 1,
-        backgroundColor: "white",
-        position: "relative",
-      }}>
+      className="flex-1 relative bg-white dark:bg-black">
       <MessageHeader user={chatUser} />
 
       <FlatList
@@ -143,26 +141,26 @@ const Messages = () => {
               backgroundColor: item.sender === "me" ? "#FFD343" : "#ccc",
               maxWidth: "70%",
             }}>
-            <Text className="text-white">{item.text}</Text>
+            <Text className="text-white dark:text-black">{item.text}</Text>
           </View>
         )}
       />
       <KeyboardAvoidingView
         behavior={"position"}
         className="absolute bottom-0 w-full">
-        <View className="flex-row w-full justify-between items-center p-2 px-3 pb-5 bg-[#D0D3D9]">
+        <View className="flex-row w-full justify-between items-center p-2 px-3 pb-5 bg-[#D0D3D9] dark:bg-black">
           <TextInput
             value={input}
             onChangeText={setInput}
             placeholder="Type a message..."
-            placeholderTextColor="#000"
-            className="flex-1 bg-white text-black p-2.5 rounded-xl"
+            placeholderTextColor={colorScheme==="dark" ? "white" : "gray"}
+            className="flex-1 bg-white text-black p-2.5 rounded-xl dark:bg-black dark:text-white border-2 border-gray-200"
           />
           <TouchableOpacity
             onPress={sendMessage}
             className="ml-2.5 p-2.5 rounded-full bg-[#FFD343]">
             <SendHorizonal
-              color={"#fff"}
+              color={colorScheme === "dark" ? "black" : "white"}
               size={18}
             />
           </TouchableOpacity>

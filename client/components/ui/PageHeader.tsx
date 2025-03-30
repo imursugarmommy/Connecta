@@ -63,9 +63,9 @@ const PageHeader = () => {
 
           {!authState.state && (
             <TouchableOpacity
-              className="p-2 px-4 rounded-full border border-gray-200"
+              className="p-2 px-4 rounded-full border border-gray-200 dark:text-white"
               onPress={() => router.push("/auth/login")}>
-              <Text>Sign in</Text>
+              <Text className="dark:text-white">Sign in</Text>
             </TouchableOpacity>
           )}
 

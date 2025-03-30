@@ -15,7 +15,7 @@ const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 const MessageHeader = ({ user }: { user: User }) => {
   return (
     <SafeAreaView>
-      <View className="p-2 flex-row items-center border-b border-gray-200">
+      <View className="p-2 flex-row items-center border-b border-gray-200 dark:text-white">
         <TouchableOpacity onPress={() => router.back()}>
           <ChevronLeft
             color={"#FFD343"}
@@ -23,16 +23,16 @@ const MessageHeader = ({ user }: { user: User }) => {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex-row items-center justify-between flex-grow gap-x-2"
+          className="flex-row items-center justify-between flex-grow gap-x-2 dark:text-white"
           onPress={() => router.push(`/user/${user.username}` as any)}>
           <View className="flex-row items-center gap-x-2">
             <Image
               source={{
                 uri: `http://${serverip}:6969/images/users/${user.profileImage}`,
               }}
-              className="w-9 h-9 rounded-full"
+              className="w-9 h-9 rounded-full dark:text-white"
             />
-            <Text className="text-lg font-bold">{user.name}</Text>
+            <Text className="text-lg font-bold dark:text-white">{user.name}</Text>
           </View>
           <View className="p-2">
             <MoveRight

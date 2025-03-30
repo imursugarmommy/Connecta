@@ -5,6 +5,8 @@ import { AuthContext } from "@/app/helpers/AuthContext";
 
 import { Trash2 } from "lucide-react-native";
 
+import { Appearance } from "react-native";
+
 import {
   Text,
   TextInput,
@@ -38,6 +40,8 @@ interface Comment {
   createdAt: string;
   updatedAt: string;
 }
+
+const colorScheme =  Appearance.getColorScheme();
 
 function Post() {
   const { postState, setPostState } = usePosts();
@@ -237,7 +241,7 @@ function Post() {
         </View>
 
         <View className="w-full">
-          <Text className="text-sm font-bold text-black">
+          <Text className="text-sm font-bold text-black dark:text-white">
             Comments ({comments.length}):
           </Text>
 
@@ -266,7 +270,7 @@ function Post() {
                         </Text>
                       </View>
 
-                      <Text>{comment.commentBody}</Text>
+                      <Text className="tex-black dark:text-white">{comment.commentBody}</Text>
                     </View>
                   </View>
 
@@ -291,19 +295,21 @@ function Post() {
         behavior="position"
         keyboardVerticalOffset={70}
         className="w-full absolute bottom-0">
-        <View className="flex-row flex-grow items-center justify-between px-4 py-2 pb-10 gap-x-4 bg-gray-300">
+        <View className="flex-row flex-grow items-center justify-between px-4 py-2 pb-10 gap-x-4 bg-gray-300 dark:bg-black border-t border-gray-200">
           <TextInput
             ref={inputRef}
             placeholder="What's your opinion?"
+            placeholderTextColor={colorScheme === "dark" ? "white" : "gray"}
             value={newComment}
             onChangeText={(text) => setNewComment(text)}
             maxLength={maxCharLimit}
-            className="p-2 flex-1 border border-gray-200 bg-white rounded-lg"
+            className="p-2 flex-1 border border-gray-200 bg-white dark:bg-black dark:text-white rounded-lg"
+            
           />
           <TouchableOpacity
             onPress={addComment}
             className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl">
-            <Text className="text-white">Reply</Text>
+            <Text className="text-white dark:text-black">Reply</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

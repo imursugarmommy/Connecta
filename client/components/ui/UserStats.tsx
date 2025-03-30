@@ -39,16 +39,16 @@ const UserStats = ({ user }: { user: User }) => {
   return (
     <View className="flex-row flex-grow justify-between items-center">
       <View className="flex items-center">
-        <Text className="text-lg">{posts}</Text>
-        <Text className="font-bold">Posts</Text>
+        <Text className="text-lg dark:text-white">{posts}</Text>
+        <Text className="font-bold dark:text-white">Posts</Text>
       </View>
       <View className="flex items-center">
-        <Text className="text-lg">{followers}</Text>
-        <Text className="font-bold">Follower</Text>
+        <Text className="text-lg dark:text-white">{followers}</Text>
+        <Text className="font-bold dark:text-white">Follower</Text>
       </View>
       <View className="flex items-center">
-        <Text className="text-lg">{following}</Text>
-        <Text className="font-bold">Following</Text>
+        <Text className="text-lg dark:text-white">{following}</Text>
+        <Text className="font-bold dark:text-white">Following</Text>
       </View>
     </View>
   );

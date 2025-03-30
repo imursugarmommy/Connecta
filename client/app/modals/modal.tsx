@@ -11,6 +11,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { router } from "expo-router";
 import { usePosts } from "../helpers/PostContext";
 import * as ImagePicker from "expo-image-picker";
+import { Appearance } from "react-native";
 
 import Divider from "@/components/ui/Divider";
 
@@ -23,6 +24,7 @@ import {
 } from "react-native-pell-rich-editor";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+const colorScheme =  Appearance.getColorScheme();
 
 const Modal = () => {
   const textInputRef = useRef<TextInput>(null);
@@ -87,7 +89,7 @@ const Modal = () => {
   };
 
   return (
-    <View className="flex-1 bg-white flex justify-between">
+    <View className="flex-1 bg-white dark:bg-black flex justify-between">
       <View className="flex-row m-4">
         {authState.profileImage ? (
           <Image
@@ -112,8 +114,9 @@ const Modal = () => {
             ref={textInputRef}
             value={title}
             onChangeText={(title) => setTitle(title)}
-            placeholder="What's do you want to talk about?"
-            className="p-2 w-full text-sm font-semibold h-10"
+            placeholder="What do you want to talk about?"
+            placeholderTextColor={colorScheme === "dark" ? "white" : "gray"}
+            className="p-2 w-full text-sm font-semibold h-10 dark:text-white"
             maxLength={60}
           />
 
@@ -147,7 +150,8 @@ const Modal = () => {
                 if (plainTextLength <= maxLength) setContent(content);
               }}
               placeholder="What's on your mind?"
-              className="p-2 w-full h-40"
+              placeholderTextColor={colorScheme === "dark" ? "white" : "gray"}
+              className="p-2 w-full h-40 dark:text-white"
               textAlignVertical="top"
               maxLength={maxLength}
             />
@@ -188,11 +192,11 @@ const Modal = () => {
         />
 
         <View className="flex-row w-full px-2 bg-gray-100">
-          <View className="flex-1 flex-row justify-between items-center gap-x-2">
+          <View className="flex-1 flex-row justify-between items-center gap-x-2 dark:bg-black">
             <TouchableOpacity
               className="p-2"
               onPress={pickImage}>
-              <ImagePlus color="black" />
+              <ImagePlus color={colorScheme === "dark" ? "white" : "black"} />
             </TouchableOpacity>
 
             {Platform.OS === "ios" && (
@@ -224,9 +228,9 @@ const Modal = () => {
               />
             )}
             <TouchableOpacity
-              className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl "
+              className="items-center p-8 py-2 bg-[#ffd455] dark:bg-[ffd455] rounded-2xl "
               onPress={() => onSubmit()}>
-              <Text className="text-white">Post</Text>
+              <Text className="text-white dark:text-black">Post</Text>
             </TouchableOpacity>
           </View>
         </View>

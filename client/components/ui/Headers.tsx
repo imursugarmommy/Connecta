@@ -1,7 +1,9 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Appearance } from "react-native";
 import React from "react";
 import { Menu } from "lucide-react-native";
 import { router } from "expo-router";
+
+const colorScheme = Appearance.getColorScheme();
 
 const Headers = ({ title = "Title", icon = false, ...props }: any) => {
   return (
@@ -13,7 +15,7 @@ const Headers = ({ title = "Title", icon = false, ...props }: any) => {
         <TouchableOpacity onPress={() => router.push("/menu")}>
           <Menu
             strokeWidth={1}
-            color={"black"}
+            color={colorScheme === "dark" ? "white" : "black"}
             size={30}
           />
         </TouchableOpacity>

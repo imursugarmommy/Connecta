@@ -6,11 +6,13 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Sharing from "expo-sharing";
+import { Appearance } from "react-native";
 
 import UserStats from "./UserStats";
 import { useAuth } from "@/app/helpers/AuthContext";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+const colorScheme = Appearance.getColorScheme();
 
 const UserHeader = ({
   user,
@@ -149,9 +151,9 @@ const UserHeader = ({
           {isYourProfile && (
             <TouchableOpacity
               onPress={isYourProfile ? editProfilePicture : () => {}}
-              className="p-1 border-4 border-white bg-gray-200 dark:bg-[#414450] rounded-full absolute -bottom-1 -right-1">
+              className="p-1 border-4 dark:border-black white:border-white bg-gray-200 dark:bg-black rounded-full absolute -bottom-1 -right-1">
               <Camera
-                color={"black"}
+                color={colorScheme === "dark" ? "white" : "gray"}
                 size={16}
               />
             </TouchableOpacity>
@@ -182,7 +184,7 @@ const UserHeader = ({
             </Text>
             <Pencil
               size={15}
-              color={"black"}
+              color={colorScheme === "dark" ? "white" : "gray"}
             />
           </TouchableOpacity>
         )}
@@ -216,7 +218,7 @@ const UserHeader = ({
           </Text>
           <Share
             size={15}
-            color={"black"}
+            color={colorScheme === "dark" ? "white" : "gray"}
           />
         </TouchableOpacity>
       </View>

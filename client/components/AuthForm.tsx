@@ -29,7 +29,8 @@ export default function AuthForm({
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
-        validationSchema={validationSchema}>
+        validationSchema={validationSchema}
+        >
         {({ handleSubmit, errors, touched }) => (
           <View>
             {objectKeysArr.map((key) => {
@@ -41,7 +42,7 @@ export default function AuthForm({
                   key={key}>
                   <View className="flex-row items-center justify-between w-full">
                     <Text
-                      className="text-black dark:text-text-dark w-auto"
+                      className="text-black dark:text-white w-auto"
                       style={{
                         color: errors[key] && touched[key] ? "red" : "#FFD343",
                       }}>
@@ -54,7 +55,7 @@ export default function AuthForm({
                     </ErrorMessage>
                   </View>
 
-                  <View className="relative">
+                  <View className="relative dark:text-white">
                     <Field
                       name={key}
                       component={CustomInput}
@@ -87,7 +88,7 @@ export default function AuthForm({
             <View className="mt-6">
               <TouchableOpacity
                 onPress={() => handleSubmit()}
-                className="bg-[#FFD343] py-2 rounded-md w-full items-center"
+                className="bg-[#FFD343] dark:bg-white py-2 rounded-md w-full items-center"
                 disabled={
                   objectKeysArr.some((key) => errors[key] && touched[key]) ||
                   (errorMessage &&
@@ -103,7 +104,7 @@ export default function AuthForm({
                       ? "rgba(255, 211, 67, 0.2)"
                       : "#FFD343",
                 }}>
-                <Text className="text-white text-lg">{value}</Text>
+                <Text className="text-white dark:text-black text-lg">{value}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -137,7 +138,7 @@ const CustomInput = ({
       secureTextEntry={field.name === "password"}
       keyboardType={field.name === "email" ? "email-address" : "default"}
       {...props}
-      className="border-b-1 rounded-md p-3 mb-2 w-full text-text-light dark:text-text-dark"
+      className="border-b-1 rounded-md p-3 mb-2 w-full text-text-light dark:text-white"
       style={{
         borderColor: error ? "red" : "#FFD343",
         borderBottomWidth: 1,

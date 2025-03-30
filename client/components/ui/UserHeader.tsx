@@ -175,7 +175,8 @@ const UserHeader = ({
       </View>
 
       <View className="w-full flex-row justify-between gap-x-2">
-        {isYourProfile && (
+        {/* Nicht geschafft :( */}
+        {/* {isYourProfile && (
           <TouchableOpacity
             className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-2"
             onPress={editProfile}>
@@ -187,7 +188,7 @@ const UserHeader = ({
               color={colorScheme === "dark" ? "white" : "gray"}
             />
           </TouchableOpacity>
-        )}
+        )} */}
 
         {!isYourProfile && isSignedIn && (
           <TouchableOpacity

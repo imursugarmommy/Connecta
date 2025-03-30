@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   ActivityIndicator,
   Appearance,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { SendHorizonal } from "lucide-react-native";
@@ -18,7 +19,7 @@ import MessageHeader from "../../components/ui/MessageHeader";
 import { User } from "@/types/User";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
-const  colorScheme = Appearance.getColorScheme();
+const colorScheme = Appearance.getColorScheme();
 
 interface Message {
   id: number;
@@ -34,11 +35,32 @@ const Messages = () => {
   const { id: chatId } = useLocalSearchParams();
 
   const [chatUser, setChatUser] = useState<User>();
+  const [refreshing, setRefreshing] = useState(false);
 
   const [messages, setMessages] = useState([
     { id: "1", text: "Hey! How's it going?", sender: "other" },
     { id: "2", text: "All good! You?", sender: "me" },
   ]);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    axios
+      .get(`http://${serverip}:6969/messages/${chatId}`)
+      .then((res) => {
+        const messagesData = res.data.map((message: Message) => ({
+          ...message,
+          sender: message.userId === authState.id ? "me" : "other",
+        }));
+
+        setMessages(messagesData);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch posts:", err);
+      })
+      .finally(() => {
+        setRefreshing(false);
+      });
+  }, [serverip, setMessages]);
 
   useLayoutEffect(() => {
     async function checkChatAuth() {
@@ -125,11 +147,16 @@ const Messages = () => {
     );
 
   return (
-    <View
-      className="flex-1 relative bg-white dark:bg-black">
+    <View className="flex-1 relative bg-white dark:bg-black">
       <MessageHeader user={chatUser} />
 
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
         data={messages}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: 10 }}
@@ -153,7 +180,7 @@ const Messages = () => {
             value={input}
             onChangeText={setInput}
             placeholder="Type a message..."
-            placeholderTextColor={colorScheme==="dark" ? "white" : "gray"}
+            placeholderTextColor={colorScheme === "dark" ? "white" : "gray"}
             className="flex-1 bg-white text-black p-2.5 rounded-xl dark:bg-black dark:text-white border-2 border-gray-200"
           />
           <TouchableOpacity

@@ -49,8 +49,6 @@ export default function HomeScreen() {
       });
   }, [serverip, setPostState]);
 
-  const { logout, authState } = useAuth();
-
   const sheetRef = useRef<BottomSheet>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -88,11 +86,14 @@ export default function HomeScreen() {
         pointerEvents={isOpen ? "auto" : "none"}
       />
 
-      <ScrollView className="w-full h-full p-4"
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-        
+      <ScrollView
+        className="w-full h-full p-4"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
         {postState.map((post: Post, index: number) => (
           <View
             key={Date.now() + index}

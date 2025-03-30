@@ -57,6 +57,22 @@ router.post("/", async (req, res) => {
   res.json({ message: "User created" });
 });
 
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const user = await Users.findByPk(id);
+
+  if (!user) return res.json({ error: "User not found" });
+
+  await Users.destroy({
+    where: {
+      id,
+    },
+  });
+
+  res.json({ message: "User deleted" });
+});
+
 router.get("/byid/:id", async (req, res) => {
   const { id } = req.params;
   const user = await Users.findByPk(id);

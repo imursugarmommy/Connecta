@@ -225,6 +225,7 @@ function Post() {
       <Animated.View
         className="absolute top-0 left-0 w-full h-full z-10"
         style={animatedStyle}
+        pointerEvents={isOpen ? "auto" : "none"}
       />
 
       <ScrollView className="flex-1 p-4">

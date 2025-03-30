@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 
 import { Formik, Field, ErrorMessage } from "formik/dist/index";
 
@@ -29,8 +35,7 @@ export default function AuthForm({
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
-        validationSchema={validationSchema}
-        >
+        validationSchema={validationSchema}>
         {({ handleSubmit, errors, touched }) => (
           <View>
             {objectKeysArr.map((key) => {
@@ -104,7 +109,9 @@ export default function AuthForm({
                       ? "rgba(255, 211, 67, 0.2)"
                       : "#FFD343",
                 }}>
-                <Text className="text-white dark:text-black text-lg">{value}</Text>
+                <Text className="text-white dark:text-black text-lg">
+                  {value}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -126,6 +133,11 @@ const CustomInput = ({
   error: boolean;
   checkUsername?: any;
 }) => {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+
+  const color = isDarkMode ? "white" : "black";
+
   return (
     <TextInput
       value={field.value}
@@ -138,11 +150,11 @@ const CustomInput = ({
       secureTextEntry={field.name === "password"}
       keyboardType={field.name === "email" ? "email-address" : "default"}
       {...props}
-      className="border-b-1 rounded-md p-3 mb-2 w-full text-text-light dark:text-white"
+      className="border-b-1 rounded-md p-3 mb-2 w-full"
       style={{
         borderColor: error ? "red" : "#FFD343",
         borderBottomWidth: 1,
-        color: error ? "#C81E1E" : "black",
+        color: error ? "#C81E1E" : color,
       }}
     />
   );

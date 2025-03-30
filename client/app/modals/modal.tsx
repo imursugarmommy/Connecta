@@ -5,6 +5,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
 import { router } from "expo-router";
@@ -102,7 +103,7 @@ const Modal = () => {
               backgroundColor: `hsl(${authState.id}, 40%, 40%)`,
             }}>
             <Text className="text-white text-xl">
-              {authState.username.split("")[0].toUpperCase() || ""}
+              {authState.name.split("")[0].toUpperCase() || ""}
             </Text>
           </View>
         )}
@@ -118,23 +119,39 @@ const Modal = () => {
 
           <Divider orientation="horizontal" />
 
-          <RichEditor
-            ref={richTextRef}
-            initialContentHTML={content}
-            onChange={(html) => {
-              const plainTextLength = getPlainTextLength(html);
+          {Platform.OS === "ios" ? (
+            <RichEditor
+              ref={richTextRef}
+              initialContentHTML={content}
+              onChange={(html) => {
+                const plainTextLength = getPlainTextLength(html);
 
-              if (plainTextLength <= maxLength) setContent(html);
-              else richTextRef.current?.setContentHTML(content);
-            }}
-            placeholder="What's on your mind?"
-            style={{ height: image ? "auto" : 240 }}
-            editorStyle={{
-              backgroundColor: "#fff",
-              placeholderColor: "#aaa",
-              contentCSSText: "font-size: 14px; padding: 10px;",
-            }}
-          />
+                if (plainTextLength <= maxLength) setContent(html);
+                else richTextRef.current?.setContentHTML(content);
+              }}
+              placeholder="What's on your mind?"
+              style={{ height: image ? "auto" : 240 }}
+              editorStyle={{
+                backgroundColor: "#fff",
+                placeholderColor: "#aaa",
+                contentCSSText: "font-size: 14px; padding: 10px;",
+              }}
+            />
+          ) : (
+            <TextInput
+              multiline
+              value={content}
+              onChangeText={(content) => {
+                const plainTextLength = getPlainTextLength(content);
+
+                if (plainTextLength <= maxLength) setContent(content);
+              }}
+              placeholder="What's on your mind?"
+              className="p-2 w-full h-40"
+              textAlignVertical="top"
+              maxLength={maxLength}
+            />
+          )}
 
           {image && (
             <View
@@ -178,32 +195,34 @@ const Modal = () => {
               <ImagePlus color="black" />
             </TouchableOpacity>
 
-            <RichToolbar
-              editor={richTextRef}
-              actions={[
-                actions.setBold,
-                actions.setItalic,
-                actions.setUnderline,
-              ]}
-              iconMap={{
-                [actions.setBold]: () => <Bold color="black" />,
-                [actions.setItalic]: () => <Italic color="black" />,
-                [actions.setUnderline]: () => <Underline color="black" />,
-              }}
-              style={{
-                flex: 1,
-                backgroundColor: "transparent",
-                padding: 4,
-              }}
-              selectedButtonStyle={{
-                backgroundColor: "#d1d5db",
-                borderRadius: 4,
-                marginHorizontal: 12,
-              }}
-              unselectedButtonStyle={{
-                marginHorizontal: 12,
-              }}
-            />
+            {Platform.OS === "ios" && (
+              <RichToolbar
+                editor={richTextRef}
+                actions={[
+                  actions.setBold,
+                  actions.setItalic,
+                  actions.setUnderline,
+                ]}
+                iconMap={{
+                  [actions.setBold]: () => <Bold color="black" />,
+                  [actions.setItalic]: () => <Italic color="black" />,
+                  [actions.setUnderline]: () => <Underline color="black" />,
+                }}
+                style={{
+                  flex: 1,
+                  backgroundColor: "transparent",
+                  padding: 4,
+                }}
+                selectedButtonStyle={{
+                  backgroundColor: "#d1d5db",
+                  borderRadius: 4,
+                  marginHorizontal: 12,
+                }}
+                unselectedButtonStyle={{
+                  marginHorizontal: 12,
+                }}
+              />
+            )}
             <TouchableOpacity
               className="items-center p-8 py-2 bg-[#ffd455] rounded-2xl "
               onPress={() => onSubmit()}>

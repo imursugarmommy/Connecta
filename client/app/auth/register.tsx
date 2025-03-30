@@ -106,7 +106,7 @@ const login = () => {
       />
 
       <View className="flex-row justify-center mt-4">
-        <Text className="text-text-light dark:text-text-dark mr-2">
+        <Text className="text-text-light dark:text-white mr-2">
           Already have an account?
         </Text>
         <TouchableOpacity onPress={() => router.push("/auth/login")}>

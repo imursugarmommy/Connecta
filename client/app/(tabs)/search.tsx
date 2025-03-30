@@ -8,12 +8,13 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
+import Divider from "@/components/ui/Divider";
 import { Text, View } from "@/components/Themed";
 import axios from "axios";
 import { router } from "expo-router";
 import PostTemplate from "@/components/PostTemplate";
 import { Post } from "@/types/Post";
-import { Search, X } from "lucide-react-native";
+import { Search, Vault, X } from "lucide-react-native";
 import { useAuth } from "../helpers/AuthContext";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
@@ -115,11 +116,14 @@ export default function SearchScreen() {
           </View>
         ) : (
           posts.map((post) => (
-            <TouchableOpacity
-              onPress={() => router.push(`/post/${post.id}` as any)}
-              key={post.id}>
-              <PostTemplate post={post} />
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                onPress={() => router.push(`/post/${post.id}` as any)}
+                key={post.id}>
+                <PostTemplate post={post} />
+              </TouchableOpacity>
+            <Divider orientation="horizontal" />
+            </View>
           ))
         )}
       </ScrollView>

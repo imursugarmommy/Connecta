@@ -68,7 +68,11 @@ function RootLayoutNav() {
               />
               <Stack.Screen
                 name="modals/modal"
-                options={{ presentation: "modal" }}
+                options={{
+                  presentation: "modal",
+                  headerTitle: "Create Post",
+                  headerBackTitle: "Back",
+                }}
               />
               <Stack.Screen
                 name="post/[id]"

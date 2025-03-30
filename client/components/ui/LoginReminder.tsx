@@ -25,7 +25,7 @@ const LoginReminder = () => {
           text="Or"
         />
         <TouchableOpacity
-          onPress={() => router.push("/auth/login" as any)}
+          onPress={() => router.push("/auth/register" as any)}
           className="bg-[#FFD343] w-5/6 items-center p-3 rounded-md my-2">
           <Text className="text-white dark:text-black">Register</Text>
         </TouchableOpacity>

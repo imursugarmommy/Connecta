@@ -92,7 +92,7 @@ const login = () => {
 
   return (
     <View className="flex-1 items-center bg-white dark:bg-black p-8">
-      <Text className="text-5xl text-text-light dark:text-text-dark w-full justify-start mb-6">
+      <Text className="text-5xl text-text-light dark:text-white w-full justify-start mb-6">
         Register
       </Text>
 

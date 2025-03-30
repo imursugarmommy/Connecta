@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 
 import * as Yup from "yup";
@@ -104,6 +104,15 @@ const login = () => {
         errorMessage={errorMessage}
         checkForUsername={checkForUsername}
       />
+
+      <View className="flex-row justify-center mt-4">
+        <Text className="text-text-light dark:text-text-dark mr-2">
+          Already have an account?
+        </Text>
+        <TouchableOpacity onPress={() => router.push("/auth/login")}>
+          <Text className="text-blue-500">Sign in</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

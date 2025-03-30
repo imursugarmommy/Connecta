@@ -99,6 +99,15 @@ const login = () => {
         errorMessage={errorMessage}
         checkForUsername={checkForUsername}
       />
+
+      <View className="flex-row justify-center mt-4">
+        <Text className="text-text-light dark:text-text-dark mr-2">
+          Don't have an account?
+        </Text>
+        <TouchableOpacity onPress={() => router.push("/auth/register")}>
+          <Text className="text-blue-500">Sign up</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

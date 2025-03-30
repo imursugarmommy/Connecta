@@ -96,6 +96,20 @@ function RootLayoutNav() {
                   headerShown: false,
                 }}
               />
+              <Stack.Screen
+                name="auth/login"
+                options={{
+                  headerTitle: "Login",
+                  headerBackTitle: "Back",
+                }}
+              />
+              <Stack.Screen
+                name="auth/register"
+                options={{
+                  headerTitle: "Register",
+                  headerBackTitle: "Back",
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </PostProvider>

@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Platform,
+  useColorScheme,
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
 import { router } from "expo-router";
@@ -24,7 +25,6 @@ import {
 } from "react-native-pell-rich-editor";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
-const colorScheme =  Appearance.getColorScheme();
 
 const Modal = () => {
   const textInputRef = useRef<TextInput>(null);
@@ -36,6 +36,8 @@ const Modal = () => {
 
   const { authState } = useAuth();
   const { addItem } = usePosts();
+
+  const colorScheme = useColorScheme();
 
   useEffect(() => {
     if (textInputRef.current) {
@@ -135,7 +137,7 @@ const Modal = () => {
               placeholder="What's on your mind?"
               style={{ height: image ? "auto" : 240 }}
               editorStyle={{
-                backgroundColor: "#fff",
+                backgroundColor: colorScheme === "light" ? "#fff" : "#000",
                 placeholderColor: "#aaa",
                 contentCSSText: "font-size: 14px; padding: 10px;",
               }}
@@ -191,7 +193,7 @@ const Modal = () => {
           }}
         />
 
-        <View className="flex-row w-full px-2 bg-gray-100">
+        <View className="flex-row w-full px-2 bg-gray-100 dark:bg-black">
           <View className="flex-1 flex-row justify-between items-center gap-x-2 dark:bg-black">
             <TouchableOpacity
               className="p-2"
@@ -208,9 +210,19 @@ const Modal = () => {
                   actions.setUnderline,
                 ]}
                 iconMap={{
-                  [actions.setBold]: () => <Bold color="black" />,
-                  [actions.setItalic]: () => <Italic color="black" />,
-                  [actions.setUnderline]: () => <Underline color="black" />,
+                  [actions.setBold]: () => (
+                    <Bold color={colorScheme === "light" ? "black" : "white"} />
+                  ),
+                  [actions.setItalic]: () => (
+                    <Italic
+                      color={colorScheme === "light" ? "black" : "white"}
+                    />
+                  ),
+                  [actions.setUnderline]: () => (
+                    <Underline
+                      color={colorScheme === "light" ? "black" : "white"}
+                    />
+                  ),
                 }}
                 style={{
                   flex: 1,

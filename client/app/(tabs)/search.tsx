@@ -50,9 +50,9 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-black">
-      <View className="m-2 p-4 w-full dark:text-white rouned-xl flex-row">
+      <View className="p-4 w-full dark:text-white rouned-xl flex-row">
         {authState.state && (
-          <View className="flex-row items-center gap-x-2 mr-2">
+          <View className="flex-row items-center mr-4">
             {authState.profileImage ? (
               <Image
                 source={{

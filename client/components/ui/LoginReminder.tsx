@@ -5,11 +5,13 @@ import Divider from "./Divider";
 
 const LoginReminder = () => {
   return (
-    <View className="items-center p-4 dark:bg-black">
-      <View className="w-full items-center mb-4 dark:bg-black">
-        <Text className="text-xl font-bold dark:text-white dark:bg-black">Please login to continue</Text>
+    <View className="items-center p-4 dark:bg-[#141414]">
+      <View className="w-full items-center mb-4">
+        <Text className="text-xl font-bold dark:text-white ">
+          Please login to continue
+        </Text>
 
-        <Text className="text-sm dark:text-white dark:bg-black">
+        <Text className="text-sm dark:text-white">
           You need to login to access those features!
         </Text>
       </View>

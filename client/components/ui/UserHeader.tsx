@@ -151,7 +151,7 @@ const UserHeader = ({
           {isYourProfile && (
             <TouchableOpacity
               onPress={isYourProfile ? editProfilePicture : () => {}}
-              className="p-1 border-4 dark:border-black white:border-white bg-gray-200 dark:bg-black rounded-full absolute -bottom-1 -right-1">
+              className="p-1 border-4 border-white dark:border-black bg-gray-200 dark:bg-black rounded-full absolute -bottom-1 -right-1">
               <Camera
                 color={colorScheme === "dark" ? "white" : "gray"}
                 size={16}

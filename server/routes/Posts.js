@@ -28,6 +28,7 @@ router.get("/", async (req, res) => {
       posts = await Posts.findAll({
         include: [Likes, Comments],
         order: [["updatedAt", "DESC"]],
+        limit: 100,
       });
 
       const regex = /(<[^>]+>)/gi;
@@ -45,6 +46,7 @@ router.get("/", async (req, res) => {
       posts = await Posts.findAll({
         include: [Likes, Comments],
         order: [["updatedAt", "DESC"]],
+        limit: 100,
       });
     }
     res.json(posts);

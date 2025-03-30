@@ -116,13 +116,13 @@ export default function SearchScreen() {
           </View>
         ) : (
           posts.map((post) => (
-            <View>
+            <View key={post.id}>
               <TouchableOpacity
-                onPress={() => router.push(`/post/${post.id}` as any)}
-                key={post.id}>
+                onPress={() => router.push(`/post/${post.id}` as any)}>
                 <PostTemplate post={post} />
               </TouchableOpacity>
-            <Divider orientation="horizontal" />
+
+              <Divider orientation="horizontal" />
             </View>
           ))
         )}

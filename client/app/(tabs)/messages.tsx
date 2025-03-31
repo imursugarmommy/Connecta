@@ -1,11 +1,17 @@
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  RefreshControl,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../helpers/AuthContext";
 import { User } from "@/types/User";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 interface Chat {
   id: number;
@@ -22,51 +28,56 @@ const ChatList = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [friends, setFriends] = useState<{ [key: number]: User }>({});
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    fetchData().finally(() => {
+      setRefreshing(false);
+    });
+  }, [serverip, setChats]);
+
   function getFriendId(chat: Chat) {
     if (authState.id === Number(chat.userId)) return Number(chat.userId2);
     else if (authState.id === Number(chat.userId2)) return Number(chat.userId);
     return 0;
   }
 
+  async function fetchData() {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+
+    await axios.get(`http://${serverip}:6969/follows/mutual/${authState.id}`, {
+      headers: {
+        accessToken,
+      },
+    });
+
+    const chatResponse = await axios.get(`http://${serverip}:6969/chats/`, {
+      headers: {
+        accessToken,
+      },
+    });
+
+    setChats(chatResponse.data);
+
+    const friendIds = chatResponse.data.map((chat: Chat) => getFriendId(chat));
+
+    const friendResponses = await Promise.all(
+      friendIds.map((id: number) =>
+        axios.get(`http://${serverip}:6969/users/byid/${id}`)
+      )
+    );
+
+    const friendsData = friendResponses.reduce((acc, res) => {
+      acc[res.data.id] = res.data;
+      return acc;
+    }, {});
+
+    setFriends(friendsData);
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      const accessToken = await AsyncStorage.getItem("accessToken");
-
-      await axios.get(
-        `http://${serverip}:6969/follows/mutual/${authState.id}`,
-        {
-          headers: {
-            accessToken,
-          },
-        }
-      );
-
-      const chatResponse = await axios.get(`http://${serverip}:6969/chats/`, {
-        headers: {
-          accessToken,
-        },
-      });
-
-      setChats(chatResponse.data);
-
-      const friendIds = chatResponse.data.map((chat: Chat) =>
-        getFriendId(chat)
-      );
-
-      const friendResponses = await Promise.all(
-        friendIds.map((id: number) =>
-          axios.get(`http://${serverip}:6969/users/byid/${id}`)
-        )
-      );
-
-      const friendsData = friendResponses.reduce((acc, res) => {
-        acc[res.data.id] = res.data;
-        return acc;
-      }, {});
-
-      setFriends(friendsData);
-    }
-
     fetchData();
   }, [authState.id]);
 
@@ -108,6 +119,12 @@ const ChatList = () => {
   return (
     <View className="flex-1 bg-white dark:bg-black dark:text-white">
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
         data={chats}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItems}

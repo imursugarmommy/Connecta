@@ -140,6 +140,7 @@ const Modal = () => {
                 backgroundColor: colorScheme === "light" ? "#fff" : "#000",
                 placeholderColor: "#aaa",
                 contentCSSText: "font-size: 14px; padding: 10px;",
+                color: colorScheme === "light" ? "#000" : "#fff",
               }}
             />
           ) : (

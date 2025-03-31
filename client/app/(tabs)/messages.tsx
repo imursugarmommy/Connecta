@@ -93,7 +93,7 @@ const ChatList = () => {
                 backgroundColor: `hsl(${friend ? friend.id : 0}, 40%, 40%)`,
               }}>
               <Text className="text-white text-xl">
-                {friend?.username?.split("")[0].toUpperCase() || ""}
+                {friend?.name?.split("")[0].toUpperCase() || ""}
               </Text>
             </View>
           )}
@@ -106,7 +106,7 @@ const ChatList = () => {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black dark:text-white">
       <FlatList
         data={chats}
         keyExtractor={(item) => item.id.toString()}

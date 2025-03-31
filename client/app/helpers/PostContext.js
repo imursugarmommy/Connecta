@@ -14,8 +14,10 @@ export const PostProvider = ({ children }) => {
         `http://${serverip}:6969/posts/`,
         newItem,
         {
-          "Content-Type": "multipart/form-data",
-          headers: { accessToken: await AsyncStorage.getItem("accessToken") },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            accessToken: await AsyncStorage.getItem("accessToken"),
+          },
         }
       );
 

@@ -1,4 +1,10 @@
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 
 import ProfilePage from "@/components/ui/ProfilePage";
@@ -11,6 +17,7 @@ const serverip = process.env.EXPO_PUBLIC_SERVERIP;
 
 const UserPage = () => {
   const { id: username } = useLocalSearchParams();
+  const colorScheme = useColorScheme();
 
   const [user, setUser] = useState<User>();
 
@@ -28,11 +35,11 @@ const UserPage = () => {
     );
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="px-6 justify-between items-center flex-row">
+    <SafeAreaView className="flex-1 bg-white dark:bg-black">
+      <View className="px-6 justify-between items-center flex-row dark:bg-black">
         <TouchableOpacity onPress={() => router.back()}>
           <ChevronLeft
-            color={"black"}
+            color={colorScheme === "light" ? "black" : "white"}
             size={28}
           />
         </TouchableOpacity>

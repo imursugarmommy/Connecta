@@ -15,12 +15,12 @@ npm install
 create .env file in the **server** directory and add the following
 
 ```.env
-DB_USERNAME = ""
-DB_PASSWORD = ""
-DB_DATABASE = ""
-DB_HOST = ""
+DB_USERNAME = "urUsername"
+DB_PASSWORD = "urPrivatePassword"
+DB_DATABASE = "urDatabase"
+DB_HOST = "urHost"
 
-JWT_SECRET = ""
+JWT_SECRET = yourJWTSecret
 ```
 
 create .env file in the **client** directory and add the following

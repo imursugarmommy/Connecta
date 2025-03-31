@@ -68,7 +68,11 @@ function RootLayoutNav() {
               />
               <Stack.Screen
                 name="modals/modal"
-                options={{ presentation: "modal" }}
+                options={{
+                  presentation: "modal",
+                  headerTitle: "Create Post",
+                  headerBackTitle: "Back",
+                }}
               />
               <Stack.Screen
                 name="post/[id]"
@@ -88,6 +92,26 @@ function RootLayoutNav() {
                 name="user/[id]"
                 options={{
                   headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="menu"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="auth/login"
+                options={{
+                  headerTitle: "Login",
+                  headerBackTitle: "Back",
+                }}
+              />
+              <Stack.Screen
+                name="auth/register"
+                options={{
+                  headerTitle: "Register",
+                  headerBackTitle: "Back",
                 }}
               />
             </Stack>

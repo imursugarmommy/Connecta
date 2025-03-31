@@ -26,29 +26,27 @@ router.get("/", async (req, res) => {
     let posts;
     if (searchparam) {
       posts = await Posts.findAll({
-        where: {
-          [Op.or]: [
-            {
-              content: {
-                [Op.like]: `%${searchparam}%`,
-              },
-            },
-            {
-              title: {
-                [Op.like]: `%${searchparam}%`,
-              },
-            },
-          ],
-        },
         include: [Likes, Comments],
-        limit: 50,
         order: [["updatedAt", "DESC"]],
+        limit: 100,
+      });
+
+      const regex = /(<[^>]+>)/gi;
+
+      posts = posts.filter((post) => {
+        let plainTextContent = post.content.replace(regex, ""); // remove html tags
+        plainTextContent = plainTextContent.replace(/&nbsp;/g, " ").trim(); // Replace &nbsp; and other HTML entities
+
+        return (
+          plainTextContent.toLowerCase().includes(searchparam.toLowerCase()) ||
+          post.title.toLowerCase().includes(searchparam.toLowerCase())
+        );
       });
     } else {
       posts = await Posts.findAll({
         include: [Likes, Comments],
-        limit: 50,
         order: [["updatedAt", "DESC"]],
+        limit: 100,
       });
     }
     res.json(posts);

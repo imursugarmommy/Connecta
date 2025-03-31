@@ -5,10 +5,14 @@ import { User } from "@/types/User";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Sharing from "expo-sharing";
+import { Appearance } from "react-native";
 
 import UserStats from "./UserStats";
+import { useAuth } from "@/app/helpers/AuthContext";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+const colorScheme = Appearance.getColorScheme();
 
 const UserHeader = ({
   user,
@@ -20,6 +24,10 @@ const UserHeader = ({
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [following, setFollowing] = useState<boolean>(true);
 
+  const { authState } = useAuth();
+
+  const isSignedIn = authState.state;
+
   useEffect(() => {
     (async () => {
       const profileImage = await AsyncStorage.getItem("profileImage");
@@ -29,6 +37,8 @@ const UserHeader = ({
     })();
 
     (async () => {
+      if (!isSignedIn) return;
+
       const following = await axios.get(
         `http://${serverip}:6969/follows/${user.id}`,
         {
@@ -92,10 +102,7 @@ const UserHeader = ({
     await AsyncStorage.setItem("profileImage", response.data.profileImage);
   }
 
-  // TODO: Implement shareProfile and editProfile
-
-  function shareProfile() {}
-
+  // TODO: Implement editProfile
   function editProfile() {}
 
   async function handleFollow() {
@@ -144,9 +151,9 @@ const UserHeader = ({
           {isYourProfile && (
             <TouchableOpacity
               onPress={isYourProfile ? editProfilePicture : () => {}}
-              className="p-1 border-4 border-white bg-gray-200 dark:bg-[#414450] rounded-full absolute -bottom-1 -right-1">
+              className="p-1 border-4 border-white dark:border-black bg-gray-200 dark:bg-black rounded-full absolute -bottom-1 -right-1">
               <Camera
-                color={"black"}
+                color={colorScheme === "dark" ? "white" : "gray"}
                 size={16}
               />
             </TouchableOpacity>
@@ -154,16 +161,22 @@ const UserHeader = ({
         </View>
 
         <View className="flex-grow flex-wrap">
-          <Text className="text-black dark:text-white text-3xl font-bold">
-            @{user.username}
-          </Text>
+          <View className="flex-row items-center">
+            <Text className="text-black dark:text-white text-xl font-bold mr-2">
+              {user.name}
+            </Text>
+            <Text className="text-gray-400 dark:text-white text-md">
+              @{user.username}
+            </Text>
+          </View>
 
           <UserStats user={user} />
         </View>
       </View>
 
       <View className="w-full flex-row justify-between gap-x-2">
-        {isYourProfile && (
+        {/* Nicht geschafft :( */}
+        {/* {isYourProfile && (
           <TouchableOpacity
             className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-2"
             onPress={editProfile}>
@@ -172,12 +185,12 @@ const UserHeader = ({
             </Text>
             <Pencil
               size={15}
-              color={"black"}
+              color={colorScheme === "dark" ? "white" : "gray"}
             />
           </TouchableOpacity>
-        )}
+        )} */}
 
-        {!isYourProfile && (
+        {!isYourProfile && isSignedIn && (
           <TouchableOpacity
             className="flex-row flex-1 justify-center items-center bg-[#FFD343] rounded-lg py-2"
             style={{
@@ -196,13 +209,17 @@ const UserHeader = ({
 
         <TouchableOpacity
           className="flex-row flex-1 justify-center items-center border border-[#ededed] dark:border-[#414450] rounded-lg py-2"
-          onPress={shareProfile}>
+          onPress={async () =>
+            await Sharing.shareAsync(
+              `http://${serverip}:6969/posts/` + user.username
+            )
+          }>
           <Text className="text-md text-black dark:text-white mr-2">
             Share Profile
           </Text>
           <Share
             size={15}
-            color={"black"}
+            color={colorScheme === "dark" ? "white" : "gray"}
           />
         </TouchableOpacity>
       </View>

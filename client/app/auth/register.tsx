@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 
 import * as Yup from "yup";
@@ -35,6 +35,12 @@ const login = () => {
     setErrorMessage("");
 
     checkForUsername(data.username, "username and password");
+
+    const namePattern = /^[a-zA-Z\s]+$/;
+    if (!namePattern.test(data.name))
+      return setErrorMessage(
+        "Name is not valid, it must start with a letter and cannot have special characters or numbers"
+      );
 
     try {
       const createUserResponse = await axios.post(
@@ -75,12 +81,19 @@ const login = () => {
 
   const checkForUsername = (username: string, name: string) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    // username pattern cannot start with special characters or numbers and cannot have spaces
+    const usernamePattern = /^[a-zA-Z][a-zA-Z0-9._-]*$/;
 
     setErrorMessage(`Checking ${name} ...`);
 
     setTimeout(() => {
       if (name === "Email" && !emailPattern.test(username))
         return setErrorMessage("Email is not valid");
+
+      if (name === "Username" && !usernamePattern.test(username))
+        return setErrorMessage(
+          "Username is not valid, it must start with a letter and cannot have spaces"
+        );
 
       axios.get(`http://${serverip}:6969/users/${username}`).then((res) => {
         if (res.data.error) return setErrorMessage("");
@@ -92,7 +105,7 @@ const login = () => {
 
   return (
     <View className="flex-1 items-center bg-white dark:bg-black p-8">
-      <Text className="text-5xl text-text-light dark:text-text-dark w-full justify-start mb-6">
+      <Text className="text-5xl text-text-light dark:text-white w-full justify-start mb-6">
         Register
       </Text>
 
@@ -104,6 +117,15 @@ const login = () => {
         errorMessage={errorMessage}
         checkForUsername={checkForUsername}
       />
+
+      <View className="flex-row justify-center mt-4">
+        <Text className="text-text-light dark:text-white mr-2">
+          Already have an account?
+        </Text>
+        <TouchableOpacity onPress={() => router.push("/auth/login")}>
+          <Text className="text-blue-500">Sign in</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

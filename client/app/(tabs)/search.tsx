@@ -8,12 +8,13 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
+import Divider from "@/components/ui/Divider";
 import { Text, View } from "@/components/Themed";
 import axios from "axios";
 import { router } from "expo-router";
 import PostTemplate from "@/components/PostTemplate";
 import { Post } from "@/types/Post";
-import { Search, X } from "lucide-react-native";
+import { Search, Vault, X } from "lucide-react-native";
 import { useAuth } from "../helpers/AuthContext";
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
@@ -48,10 +49,10 @@ export default function SearchScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View className="m-2 p-4 w-full dark:text-white rouned-xl flex-row">
+    <SafeAreaView className="flex-1 bg-white dark:bg-black">
+      <View className="p-4 w-full dark:text-white rouned-xl flex-row">
         {authState.state && (
-          <View className="flex-row items-center gap-x-2 mr-2">
+          <View className="flex-row items-center mr-4">
             {authState.profileImage ? (
               <Image
                 source={{
@@ -115,11 +116,14 @@ export default function SearchScreen() {
           </View>
         ) : (
           posts.map((post) => (
-            <TouchableOpacity
-              onPress={() => router.push(`/post/${post.id}` as any)}
-              key={post.id}>
-              <PostTemplate post={post} />
-            </TouchableOpacity>
+            <View key={post.id}>
+              <TouchableOpacity
+                onPress={() => router.push(`/post/${post.id}` as any)}>
+                <PostTemplate post={post} />
+              </TouchableOpacity>
+
+              <Divider orientation="horizontal" />
+            </View>
           ))
         )}
       </ScrollView>

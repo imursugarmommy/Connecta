@@ -1,4 +1,11 @@
-import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+  LogBox,
+} from "react-native";
 import React, { useEffect, useState, memo } from "react";
 import { User } from "@/types/User";
 import axios from "axios";
@@ -8,13 +15,27 @@ import { router } from "expo-router";
 import { Trash2 } from "lucide-react-native";
 import { Post } from "@/types/Post";
 import RenderHTML from "react-native-render-html";
+import { Appearance } from "react-native";
+
+import { Modal } from "react-native";
+import EnlargedImageModal from "./EnlargedImageModal";
+
+LogBox.ignoreLogs([
+  "MemoizedTNodeRenderer: Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead.",
+  "TRenderEngineProvider: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+]);
 
 const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
+const colorScheme = Appearance.getColorScheme();
 
 const PostContent = memo(({ post }: { post: Post }) => {
   const { authState } = useAuth();
   const { removeItem } = usePosts();
   const [user, setUser] = useState<User>();
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const user = axios.get(`http://${serverip}:6969/users/byid/${post.UserId}`);
@@ -40,6 +61,11 @@ const PostContent = memo(({ post }: { post: Post }) => {
     if (time >= 31536000) return `${Math.floor(time / 31536000)}y`;
 
     return time;
+  };
+
+  const handleImagePress = (imageUri: string) => {
+    setSelectedImage(imageUri);
+    setModalVisible(true);
   };
 
   return (
@@ -123,22 +149,39 @@ const PostContent = memo(({ post }: { post: Post }) => {
       </View>
       <View className="w-full py-2">
         <View className={"flex " + (post.postImage && "gap-y-2")}>
-          <Text className="text-lg font-bold">{post.title}</Text>
+          <Text className="text-lg dark:text-white font-bold">
+            {post.title}
+          </Text>
           {post.postImage && (
-            <Image
-              source={{
-                uri: `http://${serverip}:6969/images/posts/${post.postImage}`,
-              }}
-              className="w-full h-52 object-cover bg-black"
-            />
+            <TouchableOpacity
+              onPress={() =>
+                handleImagePress(
+                  `http://${serverip}:6969/images/posts/${post.postImage}`
+                )
+              }>
+              <Image
+                source={{
+                  uri: `http://${serverip}:6969/images/posts/${post.postImage}`,
+                }}
+                className="w-full h-52 object-cover bg-black mb-2"
+              />
+            </TouchableOpacity>
           )}
-
           <RenderHTML
             contentWidth={500}
             source={{ html: post.content }}
+            baseStyle={{
+              color: colorScheme === "dark" ? "#FEFEFE" : "#050505",
+            }}
           />
         </View>
       </View>
+
+      <EnlargedImageModal
+        visible={modalVisible}
+        imageUri={selectedImage || undefined}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 });

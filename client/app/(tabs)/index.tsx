@@ -1,7 +1,8 @@
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, RefreshControl } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { useEffect, useCallback, useRef, useState } from "react";
+import React from "react";
 
 import PostTemplate from "../../components/PostTemplate";
 import { Link, router } from "expo-router";
@@ -23,14 +24,30 @@ import BottomSheetComponent from "@/components/ui/BottomSheetComponent";
 
 import { LogBox } from "react-native";
 LogBox.ignoreLogs([
-  "TNodeChildrenRenderer: Support for defaultProps will be removed", // Suppress this warning
+  "TNodeChildrenRenderer: Support for defaultProps will be removed",
 ]);
 
 export default function HomeScreen() {
   const { postState, setPostState } = usePosts();
 
-  const { logout, authState } = useAuth();
+  const [refreshing, setRefreshing] = React.useState(false);
+
   const serverip = process.env.EXPO_PUBLIC_SERVERIP;
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true); // Show the refresh indicator
+    axios
+      .get(`http://${serverip}:6969/posts`)
+      .then((res) => {
+        setPostState(res.data); // Update the posts
+      })
+      .catch((err) => {
+        console.error("Failed to fetch posts:", err);
+      })
+      .finally(() => {
+        setRefreshing(false); // Hide the refresh indicator
+      });
+  }, [serverip, setPostState]);
 
   const sheetRef = useRef<BottomSheet>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -69,7 +86,14 @@ export default function HomeScreen() {
         pointerEvents={isOpen ? "auto" : "none"}
       />
 
-      <ScrollView className="w-full h-full p-4">
+      <ScrollView
+        className="w-full h-full p-4"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
         {postState.map((post: Post, index: number) => (
           <View
             key={Date.now() + index}
